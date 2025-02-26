@@ -1,5 +1,6 @@
 package com.levon.bolg.controller;
 
+import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.constants.CommentConstants;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.domain.dto.CommentValidationDTO;
@@ -16,13 +17,14 @@ public class LeBlogCommentController {
     private LeBlogCommentService leBlogCommentService;
 
     /**
-     * 获取评论列表
+     * 评论列表
      *
      * @param articleId 文章id
      * @param pageNum   当前页码
      * @param pageSize  页码大小
      * @return
      */
+    @SystemLog("评论列表")
     @GetMapping("/commentList")
     public ResponseResult commentList(@RequestParam Long articleId,
                                       @RequestParam(defaultValue = "1") Integer pageNum,
@@ -36,12 +38,21 @@ public class LeBlogCommentController {
      * @param commentValidateDTO
      * @return
      */
+    @SystemLog("发表评论")
     @PostMapping
     public ResponseResult addComment(@Validated @RequestBody CommentValidationDTO commentValidateDTO) {
         leBlogCommentService.addComment(commentValidateDTO);
         return ResponseResult.okResult();
     }
 
+
+    /**
+     * 友链评论列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @SystemLog("友链评论列表")
     @GetMapping("/linkCommentList")
     public ResponseResult commentList(@RequestParam(defaultValue = "1") Integer pageNum,
                                       @RequestParam(defaultValue = "10") Integer pageSize) {

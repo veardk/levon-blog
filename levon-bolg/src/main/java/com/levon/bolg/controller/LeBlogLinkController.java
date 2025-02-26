@@ -1,5 +1,6 @@
 package com.levon.bolg.controller;
 
+import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.service.LeBlogLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,10 @@ public class LeBlogLinkController {
     private LeBlogLinkService leBlogLinkService;
 
     /**
-     * 获取所有友联列表
+     * 所有友联列表
      * @return
      */
+    @SystemLog("所有友联列表")
     @GetMapping("/getAllLink")
     public ResponseResult getAllLink(){
         return ResponseResult.okResult(leBlogLinkService.getAllLink());

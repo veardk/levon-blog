@@ -1,5 +1,6 @@
 package com.levon.bolg.controller;
 
+import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class UploadController {
      * @param img 图片文件
      * @return
      */
+    @SystemLog("上传图片")
     @PostMapping("/upload")
     public ResponseResult upload(MultipartFile img){
         return ResponseResult.okResult(uploadService.uploadImg(img));

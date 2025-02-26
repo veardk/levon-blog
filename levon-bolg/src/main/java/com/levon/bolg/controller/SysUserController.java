@@ -1,5 +1,6 @@
 package com.levon.bolg.controller;
 
+import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.domain.dto.UserInfoCreateValidationDTO;
 import com.levon.framework.domain.dto.UserInfoUpdateValidationDTO;
@@ -19,6 +20,7 @@ public class SysUserController {
      * 获取用户信息
      * @return
      */
+    @SystemLog("获取用户信息")
     @GetMapping("/userInfo")
     public ResponseResult userInfo(){
         return ResponseResult.okResult(sysUserService.getUserInfo());
@@ -29,6 +31,7 @@ public class SysUserController {
      * @param userInfoDTO 用户DTO
      * @return
      */
+    @SystemLog("编辑用户信息")
     @PutMapping("/userInfo")
     public ResponseResult editUserInfo(@Validated @RequestBody UserInfoUpdateValidationDTO userInfoDTO){
         sysUserService.updateUserInfo(userInfoDTO);
@@ -42,6 +45,7 @@ public class SysUserController {
      * @param userInfoCreateValidationDTO 用户注册DTO，包含用户的必要注册信息，如用户名、密码、邮箱等
      * @return 返回注册成功的响应结果
      */
+    @SystemLog("处理用户注册请求")
     @PostMapping("/register")
     public ResponseResult register(@Validated @RequestBody UserInfoCreateValidationDTO userInfoCreateValidationDTO){
         sysUserService.register(userInfoCreateValidationDTO);

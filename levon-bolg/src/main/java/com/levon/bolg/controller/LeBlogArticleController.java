@@ -1,5 +1,6 @@
 package com.levon.bolg.controller;
 
+import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.domain.vo.PageVO;
 import com.levon.framework.service.LeBlogArticleService;
@@ -18,6 +19,7 @@ public class LeBlogArticleController {
      *
      * @return
      */
+    @SystemLog("获取热门文章列表")
     @GetMapping("/hotArticleList")
     public ResponseResult getHotArticle() {
         return ResponseResult.okResult(leBlogArticleService.hotArticleList());
@@ -26,6 +28,7 @@ public class LeBlogArticleController {
     /**
      * 文章列表
      */
+    @SystemLog("文章列表")
     @GetMapping("/articleList")
     public ResponseResult articleList(@RequestParam(defaultValue = "1") Integer pageNum,
                                       @RequestParam(defaultValue = "10") Integer pageSize,
@@ -64,6 +67,7 @@ public class LeBlogArticleController {
     /**
      * 文章详细
      */
+    @SystemLog("文章详细")
     @GetMapping("/{id}")
     public ResponseResult articleDetail(@PathVariable Long id){
         return ResponseResult.okResult(leBlogArticleService.articleDetail(id));
