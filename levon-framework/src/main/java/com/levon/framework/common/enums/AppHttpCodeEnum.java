@@ -16,7 +16,10 @@ public enum AppHttpCodeEnum {
     USER_INFO_EDIT_ERROR(507, "用户编辑信息失败"),
     USER_REGISTER_ERROR(508, "用户注册失败"),
 
-    USER_NICK_NAME_EXISTS(509, "用户昵称已存在");
+    USER_NICK_NAME_EXISTS(509, "用户昵称已存在"),
+    ARTICLE_NOT_FOUND(510, "文章未找到"),
+    REDIS_COUNTER_ERROR(511, "redis自增失败");
+
 
 
     int code;

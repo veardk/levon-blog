@@ -37,4 +37,7 @@ public interface LeBlogArticleService extends IService<LeBlogArticle> {
     PageVO articleListWithList(Integer pageNum, Integer pageSize, Long categoryId);
 
     LeBlogArticleDetailVO articleDetail(Long id);
+
+    void updateViewCount(Long id);
+
 }

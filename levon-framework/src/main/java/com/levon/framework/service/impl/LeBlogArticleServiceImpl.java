@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.levon.framework.common.enums.AppHttpCodeEnum;
+import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
+import com.levon.framework.common.util.RedisCache;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogCategory;
 import com.levon.framework.domain.vo.LeBlogArticleDetailVO;
@@ -23,6 +26,7 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.levon.framework.common.constants.ArticleConstants.ARTICLE_STATUS_PUBLISHED;
@@ -42,6 +46,9 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
     @Autowired
     private LeBlogArticleMapper leBlogArticleMapper;
 
+    @Autowired
+    private RedisCache redisCache;
+
     /**
      * 获取热门文章列表
      *
@@ -60,6 +67,13 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
 
         if (page.getRecords() != null && page.getRecords().size() > 0) {
             List<LeBlogArticle> hotArticles = page.getRecords();
+
+            // redis -> 浏览量
+            hotArticles.forEach(article -> {
+                Integer viewCount = redisCache.getCacheMapValue("article:viewCount", article.getId().toString());
+                article.setViewCount(viewCount.longValue());
+            });
+
             List<LeBlogHotArticleVO> leBlogHotArticleVos = BeanCopyUtils.copyBeanList(hotArticles, LeBlogHotArticleVO.class);
             return leBlogHotArticleVos;
         }
@@ -97,6 +111,10 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         List<LeBlogArticleListVO> leBlogArticleListVo = leBlogArticleList
                 .stream()
                 .map(article -> {
+                    // 从redis读取访问量
+                    Integer viewCount = redisCache.getCacheMapValue("article:viewCount", article.getId().toString());
+                    article.setViewCount(viewCount.longValue());
+
                     LeBlogArticleListVO articleVo = new LeBlogArticleListVO();
                     BeanUtils.copyProperties(article, articleVo);
 
@@ -149,6 +167,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
 
     /**
      * 获取文章详情
+     *
      * @return
      */
     @Override
@@ -161,7 +180,12 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
 
         Assert.notNull(leBlogArticle, "错误数据：" + id);
 
+        // 从redis读取访问量
+        Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
+        leBlogArticle.setViewCount(viewCount.longValue());
+
         LeBlogArticleDetailVO leBlogArticleDetailVo = BeanCopyUtils.copyBean(leBlogArticle, LeBlogArticleDetailVO.class);
+
 
         LeBlogCategory leBlogCategory = leBlogCategoryMapper.selectById(leBlogArticle.getCategoryId());
         Assert.notNull(leBlogCategory, "错误数据" + leBlogArticle.getCategoryId());
@@ -169,6 +193,27 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         leBlogArticleDetailVo.setCategoryName(leBlogCategory.getName());
 
         return leBlogArticleDetailVo;
+    }
+
+    @Override
+    public void updateViewCount(Long id) {
+        LeBlogArticle leBlogArticle = leBlogArticleMapper.selectOne(new LambdaQueryWrapper<LeBlogArticle>()
+                .eq(LeBlogArticle::getId, id)
+                .eq(LeBlogArticle::getStatus, ARTICLE_STATUS_PUBLISHED));
+
+        if (Objects.isNull(leBlogArticle)) {
+            throw new SystemException(AppHttpCodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        try {
+            String redisKey = "article:viewCount";
+            redisCache.incrementCacheMapValue(redisKey, leBlogArticle.getId().toString(), 1);
+
+        } catch (Exception e) {
+            log.error("Update view count error for article id: {}", e);
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+
     }
 
 }

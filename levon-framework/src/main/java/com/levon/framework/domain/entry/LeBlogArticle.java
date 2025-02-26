@@ -72,22 +72,18 @@ public class LeBlogArticle implements Serializable {
     /**
      * 创建人的用户id
      */
-    @TableField(fill = FieldFill.INSERT)
     private Long createBy;
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     /**
      * 更新人
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateBy;
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
@@ -99,4 +95,8 @@ public class LeBlogArticle implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
+    public LeBlogArticle(Long id, Long viewCount) {
+        this.id = id;
+        this.viewCount= viewCount;
+    }
 }

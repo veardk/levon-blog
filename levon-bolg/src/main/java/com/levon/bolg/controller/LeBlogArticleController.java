@@ -73,6 +73,9 @@ public class LeBlogArticleController {
         return ResponseResult.okResult(leBlogArticleService.articleDetail(id));
     }
 
-
-
+    @PutMapping("/updateViewCount/{id}")
+    public ResponseResult updateViewCount(@PathVariable("id") Long id){
+        leBlogArticleService.updateViewCount(id);
+        return ResponseResult.okResult();
+    }
 }
