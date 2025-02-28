@@ -68,8 +68,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="LeBlogComment" />
-                  <option name="tableName" value="le_blog_comment" />
+                  <option name="className" value="LeBlogTag" />
+                  <option name="tableName" value="le_blog_tag" />
                 </TableUIInfo>
               </list>
             </option>

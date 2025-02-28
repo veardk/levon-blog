@@ -2,6 +2,7 @@ package com.levon.framework.mapper;
 
 import com.levon.framework.domain.entry.LeBlogLink;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author leivik
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-02-20 22:55:44
 * @Entity com.levon.framework.domain.entry.LeBlogLink
 */
+@Mapper
 public interface LeBlogLinkMapper extends BaseMapper<LeBlogLink> {
 
 }

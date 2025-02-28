@@ -3,9 +3,8 @@ package com.levon.bolg.controller;
 import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.domain.dto.UserLoginDTO;
-import com.levon.framework.service.SysUserService;
+import com.levon.framework.service.LeBlogLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LeBlogLoginController {
 
     @Autowired
-    private SysUserService sysUserService;
+    private LeBlogLoginService leBlogLoginService;
 
     /**
      * 用户登陆
@@ -24,7 +23,7 @@ public class LeBlogLoginController {
     @SystemLog("用户登陆")
     @PostMapping("/login")
     public ResponseResult login(@RequestBody UserLoginDTO user){
-        return ResponseResult.okResult(sysUserService.login(user));
+        return ResponseResult.okResult(leBlogLoginService.login(user));
     }
 
     /**
@@ -34,10 +33,8 @@ public class LeBlogLoginController {
     @SystemLog("用户退出")
     @PostMapping("/logout")
     public ResponseResult logout(){
-        sysUserService.logout();
+        leBlogLoginService.logout();
         return ResponseResult.okResult();
     }
-
-
 
 }

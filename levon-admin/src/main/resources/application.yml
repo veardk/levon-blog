@@ -1,0 +1,26 @@
+server:
+  port: 8989
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/le_blog?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 2MB # 上传的单个文件大小不得超过 2MB。如果用户尝试上传一个超过此大小的文件，服务器将拒绝该请求。
+      max-request-size: 5MB # 限制整个请求的最大大小。请求包括所有文件和其他表单数据（如文本字段）
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0  # 可省略，默认0
+mybatis-plus:
+  configuration:
+    # 日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
