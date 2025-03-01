@@ -98,7 +98,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
     @Override
     public LeBlogAdminMenuRouterVO selectAllMenuRouter() {
         List<MenuVo> menuRouterList = sysMenuMapper.selectAllMenuRouter();
-        if (menuRouterList == null && menuRouterList.isEmpty()) {
+        if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
@@ -118,7 +118,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
     public LeBlogAdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId) {
         List<MenuVo> menuRouterList = sysMenuMapper.selectMenuRouterTreeByUserId(userId);
 
-        if (menuRouterList == null && menuRouterList.isEmpty()) {
+        if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
@@ -135,24 +135,27 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return 树形结构的菜单列表
      */
     private List<MenuVo> buildMenuTree(List<MenuVo> menuList) {
+        if(menuList == null){
+            return new ArrayList<>();
+        }
+
         Map<Long, MenuVo> menuMap = new HashMap<>();
         List<MenuVo> rootMenus = new ArrayList<>();
-
         // 并将menu放入map中,key为 menu.id
         menuList.forEach(menu -> {
             menu.setChildren(new ArrayList<>());
             menuMap.put(menu.getId(), menu);
         });
 
-        // 根据 menuType 判断，如果是 `C` 类型的菜单，则是根菜单
+        // parentId为0则是根菜单
         menuList.forEach(menu -> {
-            if (MenuConstants.MENU_TYPE_MENU.equals(menu.getMenuType())) {
+            if (MenuConstants.MENU_ROOT_MENU.equals(menu.getParentId())) {
                 rootMenus.add(menu);
             } else {
-                // 子菜单，加入父级菜单的 children 列表
+                // 找子菜单对应的根菜单
                 MenuVo parent = menuMap.get(menu.getParentId());
+                // 将子菜单加入到根菜单的 children 列表
                 if (parent != null) {
-                    // 将子菜单加入到父菜单的 children 列表
                     parent.getChildren().add(menu);
                 }
             }

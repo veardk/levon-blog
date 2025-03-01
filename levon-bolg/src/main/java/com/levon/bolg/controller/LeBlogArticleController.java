@@ -38,33 +38,6 @@ public class LeBlogArticleController {
     }
 
     /**
-     *  IPage-XML 分页方式测试：文章列表
-     */
-    @GetMapping("/test1")
-    public ResponseResult test1(){
-        PageVO pageVo = leBlogArticleService.articleListByXml(1, 10, null);
-        return ResponseResult.okResult(pageVo);
-    }
-
-    /**
-     *  Page-XML 分页方式测试：文章列表
-     */
-    @GetMapping("/test2")
-    public ResponseResult test2(){
-        PageVO pageVo = leBlogArticleService.articleListWithPage(1, 10, 1L);
-        return ResponseResult.okResult(pageVo);
-    }
-
-    /**
-     *  List-XML 分页方式测试：文章列表
-     */
-    @GetMapping("/test3")
-    public ResponseResult test3(){
-        PageVO pageVo = leBlogArticleService.articleListWithList(1, 10, 1L);
-        return ResponseResult.okResult(pageVo);
-    }
-
-    /**
      * 文章详细
      */
     @SystemLog("文章详细")

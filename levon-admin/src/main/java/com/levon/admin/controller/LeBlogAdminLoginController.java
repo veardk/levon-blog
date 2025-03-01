@@ -38,12 +38,12 @@ public class LeBlogAdminLoginController {
      * 管理员用户退出
      * @return
      */
-//    @SystemLog("管理员用户退出")
-//    @PostMapping("/user/logout")
-//    public ResponseResult logout(){
-//        leBlogAdminLoginService.logout();
-//        return ResponseResult.okResult();
-//    }
+    @SystemLog("管理员用户退出")
+    @PostMapping("/user/logout")
+    public ResponseResult logout(){
+        leBlogAdminLoginService.logout();
+        return ResponseResult.okResult();
+    }
 
     /**
      * 获取管理员权限信息

@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对于登录接口 允许匿名访问
                 .antMatchers("/user/login").anonymous()
                 // jwt过滤,必须携带token才能访问
-                .antMatchers("/logout").authenticated()
+                .antMatchers("/user/logout").authenticated()
                 .antMatchers("/getInfo").authenticated()
                 .antMatchers("/getRouters").authenticated()
                 // 除上面外的所有请求全部不需要认证即可访问

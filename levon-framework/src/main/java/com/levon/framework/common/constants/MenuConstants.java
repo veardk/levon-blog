@@ -8,4 +8,5 @@ public class MenuConstants {
 
     public static final String MENU_STATUS_NORMAL = "0";  // 正常
     public static final String MENU_STATUS_DISABLED = "1"; // 停用
+    public static final Long MENU_ROOT_MENU = 0L;
 }
