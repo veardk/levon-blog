@@ -21,8 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-import static com.levon.framework.common.constants.CommentConstants.ARTICLE_COMMENT;
-
 /**
  * @author leivik
  * @description 针对表【le_blog_comment(评论表)】的数据库操作Service实现
@@ -75,7 +73,7 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
 
         // 添加子评论
         leBlogCommentVoList.forEach(rootCommentVo ->
-                rootCommentVo.setChildren(getChildren(rootCommentVo.getId()))
+                rootCommentVo.setChildren(getChildren(commentType, rootCommentVo.getId()))
         );
 
         return new PageVO(leBlogCommentVoList, page.getTotal());
@@ -108,14 +106,15 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
     /**
      * 获取根评论的子评论
      *
+     * @param commentType 评论类型
      * @param rootCommentId 根评论id
      * @return
      */
-    private List<LeBlogCommentVO> getChildren(Long rootCommentId) {
+    private List<LeBlogCommentVO> getChildren(int commentType, Long rootCommentId) {
         LambdaQueryWrapper<LeBlogComment> wrapper = new LambdaQueryWrapper<>();
 
         wrapper.eq(LeBlogComment::getRootId, rootCommentId)
-                .eq(LeBlogComment::getType, ARTICLE_COMMENT)
+                .eq(LeBlogComment::getType, commentType)
                 .orderByAsc(LeBlogComment::getCreateTime);
 
         List<LeBlogCommentVO> childrenVoList = toCommentVoList(list(wrapper));

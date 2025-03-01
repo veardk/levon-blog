@@ -195,6 +195,10 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         return leBlogArticleDetailVo;
     }
 
+    /**
+     *
+     * @param id
+     */
     @Override
     public void updateViewCount(Long id) {
         LeBlogArticle leBlogArticle = leBlogArticleMapper.selectOne(new LambdaQueryWrapper<LeBlogArticle>()

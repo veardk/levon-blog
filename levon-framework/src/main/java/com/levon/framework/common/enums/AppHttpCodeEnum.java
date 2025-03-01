@@ -18,7 +18,9 @@ public enum AppHttpCodeEnum {
 
     USER_NICK_NAME_EXISTS(509, "用户昵称已存在"),
     ARTICLE_NOT_FOUND(510, "文章未找到"),
-    REDIS_COUNTER_ERROR(511, "redis自增失败");
+    REDIS_COUNTER_ERROR(511, "redis自增失败"),
+    NO_ADMIN_PERMISSIONS(512, "该用户没有管理员权限信息"),
+    ADMIN_MENU_NOT_FOUND(513, "找不到该管理员的菜单路由");
 
 
 

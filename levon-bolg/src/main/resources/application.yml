@@ -16,8 +16,8 @@ spring:
     database: 0  # 可省略，默认0
 mybatis-plus:
   configuration:
-    # 日志
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true # 开启驼峰命名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志
   global-config:
     db-config:
       logic-delete-field: delFlag

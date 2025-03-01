@@ -1,38 +1,23 @@
 package com.levon.framework.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.levon.framework.common.enums.AppHttpCodeEnum;
-import com.levon.framework.common.exception.SystemException;
+
 import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.common.util.JwtUtil;
 import com.levon.framework.common.util.RedisCache;
-import com.levon.framework.common.util.SecurityUtils;
-import com.levon.framework.domain.dto.UserInfoCreateValidationDTO;
-import com.levon.framework.domain.dto.UserInfoUpdateValidationDTO;
 import com.levon.framework.domain.dto.UserLoginDTO;
 import com.levon.framework.domain.entry.LoginUser;
-import com.levon.framework.domain.entry.SysUser;
 import com.levon.framework.domain.vo.LeBlogUserLoginVO;
-import com.levon.framework.domain.vo.SysUserInfoVo;
 import com.levon.framework.domain.vo.UserInfoVO;
 import com.levon.framework.service.LeBlogLoginService;
-import com.levon.framework.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-/**
- * @author leivik
- * @description 针对表【sys_user(用户表)】的数据库操作Service实现
- * @createDate 2025-02-22 09:53:58
- */
 
 //LeBlogLoginServiceImpl
 @Service
@@ -43,7 +28,6 @@ public class LeBlogLoginServiceImpl implements LeBlogLoginService {
 
     @Autowired
     private RedisCache redisCache;
-
 
 
     /**
@@ -64,7 +48,6 @@ public class LeBlogLoginServiceImpl implements LeBlogLoginService {
         if (Objects.isNull(authenticate)) {
             throw new RuntimeException("用户名或密码错误");
         }
-
 
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
 

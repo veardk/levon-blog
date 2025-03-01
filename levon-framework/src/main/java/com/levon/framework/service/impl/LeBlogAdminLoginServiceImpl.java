@@ -1,10 +1,11 @@
 package com.levon.framework.service.impl;
 
+
 import com.levon.framework.common.util.JwtUtil;
 import com.levon.framework.common.util.RedisCache;
 import com.levon.framework.domain.dto.UserLoginDTO;
 import com.levon.framework.domain.entry.LoginUser;
-import com.levon.framework.domain.vo.LeBlogAdminUserInfoVo;
+
 import com.levon.framework.service.LeBlogAdminLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class LeBlogAdminLoginServiceImpl implements LeBlogAdminLoginService {
@@ -24,8 +23,6 @@ public class LeBlogAdminLoginServiceImpl implements LeBlogAdminLoginService {
 
     @Autowired
     private RedisCache redisCache;
-
-
 
     /**
      * 管理员用户登陆
@@ -76,12 +73,4 @@ public class LeBlogAdminLoginServiceImpl implements LeBlogAdminLoginService {
         //删除redis中的用户信息
         redisCache.deleteObject("blog_admin_login:" + userId);
     }
-
-    @Override
-    public LeBlogAdminUserInfoVo getInfo() {
-
-
-        return null;
-    }
-
 }

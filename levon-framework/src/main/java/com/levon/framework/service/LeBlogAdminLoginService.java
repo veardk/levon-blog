@@ -1,7 +1,7 @@
 package com.levon.framework.service;
 
 import com.levon.framework.domain.dto.UserLoginDTO;
-import com.levon.framework.domain.vo.LeBlogAdminUserInfoVo;
+
 
 import java.util.Map;
 
@@ -20,10 +20,4 @@ public interface LeBlogAdminLoginService {
      */
     void logout();
 
-    /**
-     * 获取管理员权限信息
-     *
-     * @return
-     */
-    LeBlogAdminUserInfoVo getInfo();
 }

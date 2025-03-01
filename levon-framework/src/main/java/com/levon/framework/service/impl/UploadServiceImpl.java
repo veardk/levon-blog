@@ -123,4 +123,48 @@ public class UploadServiceImpl implements UploadService {
         return "Error";
     }
 
+//    private static final Logger logger = Logger.getLogger(UploadServiceImpl.class.getName());
+//    private static final String[] ALLOWED_TYPES = {".png", ".jpg"};
+//    @Value("${qiniu.accessKey}")
+//    private String accessKey;
+//    @Value("${qiniu.secretKey}")
+//    private String secretKey;
+//    @Value("${qiniu.bucket}")
+//    private String bucket;
+//    @Value("${qiniu.fileBucketUrl}")
+//    private String fileBucketUrl;
+//    @Override
+//    public String uploadImg(MultipartFile img) {
+//        String originalFilename = img.getOriginalFilename();
+//        if (!isValidFileType(originalFilename)) {
+//            throw new SystemException(AppHttpCodeEnum.UPLOAD_FILE_TYPE_ERROR);
+//        }
+//        String imgPath = PathUtils.generateFilePath(originalFilename);
+//        return uploadOss(img, imgPath);
+//    }
+//    private boolean isValidFileType(String filename) {
+//        for (String type : ALLOWED_TYPES) {
+//            if (filename.endsWith(type)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//    private String uploadOss(MultipartFile img, String imgKey) {
+//        Configuration cfg = new Configuration(Region.autoRegion());
+//        UploadManager uploadManager = new UploadManager(cfg);
+//        try (InputStream inputStream = img.getInputStream()) {
+//            Auth auth = Auth.create(accessKey, secretKey);
+//            String upToken = auth.uploadToken(bucket);
+//            Response response = uploadManager.put(inputStream, imgKey, upToken, null, null);
+//            DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+//            return fileBucketUrl + putRet.key;
+//        } catch (QiniuException ex) {
+//            logger.severe("上传失败：" + ex.response.toString());
+//            throw new SystemException(AppHttpCodeEnum.UPLOAD_FAILED);
+//        } catch (Exception ex) {
+//            logger.severe("未知错误：" + ex.getMessage());
+//            throw new SystemException(AppHttpCodeEnum.UNKNOWN_ERROR);
+//        }
+//    }
 }

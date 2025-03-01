@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.FileInputStream;
@@ -111,6 +112,14 @@ public class OssTest {
         System.out.println("Property accessKey: " + System.getProperty("oss.accessKey"));
         System.out.println("Property secretKey: " + System.getProperty("oss.secretKey"));
         System.out.println("Property bucket: " + System.getProperty("oss.bucket"));
+    }
+
+    @Test
+    public void passwordTest(){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encode = bCryptPasswordEncoder.encode("1234");
+        System.out.println("encode = " + encode);
+
     }
 
 }
