@@ -3,6 +3,7 @@ package com.levon.framework.domain.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -21,7 +22,7 @@ public class CommentValidationDTO {
      * 类型，0为文章评论，1为友链评论
      */
     @NotNull(message = "Comment type cannot be null")
-    @Size(min = 1, max = 1, message = "Type must be 0 or 1")
+    @Pattern(regexp = "[01]", message = "Type must be 0 or 1")
     private String type;
 
     /**

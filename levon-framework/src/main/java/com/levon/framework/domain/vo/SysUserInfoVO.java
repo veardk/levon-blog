@@ -3,11 +3,11 @@ package com.levon.framework.domain.vo;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.util.Date;
+
 import lombok.Data;
 
 @Data
-public class SysUserInfoVo implements Serializable {
+public class SysUserInfoVO implements Serializable {
     /**
      * 主键
      */

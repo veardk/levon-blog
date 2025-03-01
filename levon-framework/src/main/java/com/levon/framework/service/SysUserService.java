@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.dto.UserInfoCreateValidationDTO;
 import com.levon.framework.domain.dto.UserInfoUpdateValidationDTO;
 import com.levon.framework.domain.entry.SysUser;
-import com.levon.framework.domain.vo.SysUserInfoVo;
+import com.levon.framework.domain.vo.SysUserInfoVO;
 
 public interface SysUserService extends IService<SysUser> {
-    SysUserInfoVo getUserInfo();
+    SysUserInfoVO getUserInfo();
 
     /**
      * 编辑用户信息

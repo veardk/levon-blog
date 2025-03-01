@@ -2,7 +2,7 @@ package com.levon.framework.mapper;
 
 import com.levon.framework.domain.entry.SysMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.levon.framework.domain.vo.MenuVo;
+import com.levon.framework.domain.vo.MenuVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      *
      * @return 包含所有菜单路由的列表。
      */
-    List<MenuVo> selectAllMenuRouter();
+    List<MenuVO> selectAllMenuRouter();
 
     /**
      * 根据管理员ID获取菜单路由项。
@@ -36,7 +36,7 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param userId 管理员ID
      * @return 该用户可访问的菜单树形列表
      */
-    List<MenuVo> selectMenuRouterTreeByUserId(@Param("userId") Long userId);
+    List<MenuVO> selectMenuRouterTreeByUserId(@Param("userId") Long userId);
 }
 
 

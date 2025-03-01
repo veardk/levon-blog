@@ -9,7 +9,7 @@ import com.levon.framework.common.util.SecurityUtils;
 import com.levon.framework.domain.dto.UserInfoCreateValidationDTO;
 import com.levon.framework.domain.dto.UserInfoUpdateValidationDTO;
 import com.levon.framework.domain.entry.SysUser;
-import com.levon.framework.domain.vo.SysUserInfoVo;
+import com.levon.framework.domain.vo.SysUserInfoVO;
 import com.levon.framework.mapper.SysUserMapper;
 import com.levon.framework.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public SysUserInfoVo getUserInfo() {
+    public SysUserInfoVO getUserInfo() {
 
         SysUser sysUser = sysUserMapper.selectById(SecurityUtils.getUserId());
 
@@ -37,7 +37,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "账户异常");
         }
 
-        return BeanCopyUtils.copyBean(sysUser, SysUserInfoVo.class);
+        return BeanCopyUtils.copyBean(sysUser, SysUserInfoVO.class);
     }
 
     /**

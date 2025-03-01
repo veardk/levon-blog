@@ -20,8 +20,12 @@ public enum AppHttpCodeEnum {
     ARTICLE_NOT_FOUND(510, "文章未找到"),
     REDIS_COUNTER_ERROR(511, "redis自增失败"),
     NO_ADMIN_PERMISSIONS(512, "该用户没有管理员权限信息"),
-    ADMIN_MENU_NOT_FOUND(513, "找不到该管理员的菜单路由");
-
+    ADMIN_MENU_NOT_FOUND(513, "找不到该管理员的菜单路由"),
+    TAG_NOT_FOUND(514, "标签未找到"),
+    UPDATE_FAILED(515, "更新失败"),
+    DELETE_FAILED(516, "删除失败"),
+    CREATE_FAILED(517, "创建失败"),
+    TAG_EXIST(518, "标签已存在");
 
 
     int code;

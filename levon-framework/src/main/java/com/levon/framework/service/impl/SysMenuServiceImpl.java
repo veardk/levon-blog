@@ -10,7 +10,7 @@ import com.levon.framework.common.util.SecurityUtils;
 import com.levon.framework.domain.entry.SysMenu;
 import com.levon.framework.domain.vo.LeBlogAdminMenuRouterVO;
 import com.levon.framework.domain.vo.LeBlogAdminUserInfoVO;
-import com.levon.framework.domain.vo.MenuVo;
+import com.levon.framework.domain.vo.MenuVO;
 import com.levon.framework.domain.vo.UserInfoVO;
 import com.levon.framework.mapper.SysRoleMapper;
 import com.levon.framework.service.SysMenuService;
@@ -97,13 +97,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      */
     @Override
     public LeBlogAdminMenuRouterVO selectAllMenuRouter() {
-        List<MenuVo> menuRouterList = sysMenuMapper.selectAllMenuRouter();
+        List<MenuVO> menuRouterList = sysMenuMapper.selectAllMenuRouter();
         if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
         // 转换为树形结构
-        List<MenuVo> menuTree = buildMenuTree(menuRouterList);
+        List<MenuVO> menuTree = buildMenuTree(menuRouterList);
 
         return new LeBlogAdminMenuRouterVO(menuTree);
     }
@@ -116,14 +116,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      */
     @Override
     public LeBlogAdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId) {
-        List<MenuVo> menuRouterList = sysMenuMapper.selectMenuRouterTreeByUserId(userId);
+        List<MenuVO> menuRouterList = sysMenuMapper.selectMenuRouterTreeByUserId(userId);
 
         if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
         // 转换为树形结构
-        List<MenuVo> menuTree = buildMenuTree(menuRouterList);
+        List<MenuVO> menuTree = buildMenuTree(menuRouterList);
 
         return new LeBlogAdminMenuRouterVO(menuTree);
     }
@@ -134,13 +134,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @param menuList 菜单列表
      * @return 树形结构的菜单列表
      */
-    private List<MenuVo> buildMenuTree(List<MenuVo> menuList) {
+    private List<MenuVO> buildMenuTree(List<MenuVO> menuList) {
         if(menuList == null){
             return new ArrayList<>();
         }
 
-        Map<Long, MenuVo> menuMap = new HashMap<>();
-        List<MenuVo> rootMenus = new ArrayList<>();
+        Map<Long, MenuVO> menuMap = new HashMap<>();
+        List<MenuVO> rootMenus = new ArrayList<>();
         // 并将menu放入map中,key为 menu.id
         menuList.forEach(menu -> {
             menu.setChildren(new ArrayList<>());
@@ -153,7 +153,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
                 rootMenus.add(menu);
             } else {
                 // 找子菜单对应的根菜单
-                MenuVo parent = menuMap.get(menu.getParentId());
+                MenuVO parent = menuMap.get(menu.getParentId());
                 // 将子菜单加入到根菜单的 children 列表
                 if (parent != null) {
                     parent.getChildren().add(menu);
