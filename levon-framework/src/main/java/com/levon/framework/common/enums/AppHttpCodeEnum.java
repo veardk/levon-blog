@@ -25,7 +25,9 @@ public enum AppHttpCodeEnum {
     UPDATE_FAILED(515, "更新失败"),
     DELETE_FAILED(516, "删除失败"),
     CREATE_FAILED(517, "创建失败"),
-    TAG_EXIST(518, "标签已存在");
+    TAG_EXIST(518, "标签已存在"),
+    DATA_NOT_FOUND(519, "数据不存在"),
+    DATA_EXIST(520, "数据已存在");
 
 
     int code;

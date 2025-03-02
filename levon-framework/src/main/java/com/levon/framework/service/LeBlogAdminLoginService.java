@@ -2,7 +2,6 @@ package com.levon.framework.service;
 
 import com.levon.framework.domain.dto.UserLoginDTO;
 
-
 import java.util.Map;
 
 public interface LeBlogAdminLoginService {

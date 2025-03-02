@@ -10,9 +10,9 @@ import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.common.util.RedisCache;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogCategory;
-import com.levon.framework.domain.vo.LeBlogArticleDetailVO;
-import com.levon.framework.domain.vo.LeBlogArticleListVO;
-import com.levon.framework.domain.vo.LeBlogHotArticleVO;
+import com.levon.framework.domain.vo.ClientArticleDetailVO;
+import com.levon.framework.domain.vo.ClientArticleListVO;
+import com.levon.framework.domain.vo.ClientHotArticleVO;
 import com.levon.framework.domain.vo.PageVO;
 import com.levon.framework.mapper.LeBlogArticleMapper;
 import com.levon.framework.mapper.LeBlogCategoryMapper;
@@ -55,7 +55,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
      * @return
      */
     @Override
-    public List<LeBlogHotArticleVO> hotArticleList() {
+    public List<ClientHotArticleVO> hotArticleList() {
         Page<LeBlogArticle> page = new Page<>(1, 10);
 
         LambdaQueryWrapper<LeBlogArticle> wrapper = new LambdaQueryWrapper<>();
@@ -74,7 +74,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
                 article.setViewCount(viewCount.longValue());
             });
 
-            List<LeBlogHotArticleVO> leBlogHotArticleVos = BeanCopyUtils.copyBeanList(hotArticles, LeBlogHotArticleVO.class);
+            List<ClientHotArticleVO> leBlogHotArticleVos = BeanCopyUtils.copyBeanList(hotArticles, ClientHotArticleVO.class);
             return leBlogHotArticleVos;
         }
         return new ArrayList<>();
@@ -108,14 +108,14 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         }
 
         List<LeBlogArticle> leBlogArticleList = page.getRecords();
-        List<LeBlogArticleListVO> leBlogArticleListVo = leBlogArticleList
+        List<ClientArticleListVO> leBlogArticleListVo = leBlogArticleList
                 .stream()
                 .map(article -> {
                     // 从redis读取访问量
                     Integer viewCount = redisCache.getCacheMapValue("article:viewCount", article.getId().toString());
                     article.setViewCount(viewCount.longValue());
 
-                    LeBlogArticleListVO articleVo = new LeBlogArticleListVO();
+                    ClientArticleListVO articleVo = new ClientArticleListVO();
                     BeanUtils.copyProperties(article, articleVo);
 
                     // 获取分类名称并设置VO
@@ -138,20 +138,20 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
      */
     public PageVO articleListByXml(Integer pageNum, Integer pageSize, Long categoryId) {
         Page<LeBlogArticle> page = new Page<>(pageNum, pageSize);
-        IPage<LeBlogArticleListVO> leBlogArticleListVoIPage = leBlogArticleMapper.articleListByXml(page, categoryId);
+        IPage<ClientArticleListVO> leBlogArticleListVoIPage = leBlogArticleMapper.articleListByXml(page, categoryId);
         Assert.notNull(leBlogArticleListVoIPage, "NULL");
 
-        List<LeBlogArticleListVO> records = leBlogArticleListVoIPage.getRecords();
+        List<ClientArticleListVO> records = leBlogArticleListVoIPage.getRecords();
         return new PageVO(records, leBlogArticleListVoIPage.getTotal());
     }
 
     @Override
     public PageVO articleListWithPage(Integer pageNum, Integer pageSize, Long categoryId) {
         Page<LeBlogArticle> page = new Page<>(pageNum, pageSize);
-        Page<LeBlogArticleListVO> leBlogArticleListVoPage = leBlogArticleMapper.articleListWithPage(page, categoryId);
+        Page<ClientArticleListVO> leBlogArticleListVoPage = leBlogArticleMapper.articleListWithPage(page, categoryId);
         Assert.notNull(leBlogArticleListVoPage, "NULL");
 
-        List<LeBlogArticleListVO> records = leBlogArticleListVoPage.getRecords();
+        List<ClientArticleListVO> records = leBlogArticleListVoPage.getRecords();
 
         return new PageVO(records, leBlogArticleListVoPage.getTotal());
     }
@@ -159,7 +159,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
     @Override
     public PageVO articleListWithList(Integer pageNum, Integer pageSize, Long categoryId) {
         Page<LeBlogArticle> page = new Page<>(pageNum, pageSize);
-        List<LeBlogArticleListVO> leBlogArticleListVos = leBlogArticleMapper.articleListWithList(page, categoryId);
+        List<ClientArticleListVO> leBlogArticleListVos = leBlogArticleMapper.articleListWithList(page, categoryId);
         Assert.notNull(leBlogArticleListVos, "NULL");
 
         return new PageVO(leBlogArticleListVos, Long.valueOf(leBlogArticleListVos.size()));
@@ -171,7 +171,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
      * @return
      */
     @Override
-    public LeBlogArticleDetailVO articleDetail(Long id) {
+    public ClientArticleDetailVO articleDetail(Long id) {
 
         LeBlogArticle leBlogArticle = leBlogArticleMapper.selectOne(new LambdaQueryWrapper<LeBlogArticle>()
                 .eq(LeBlogArticle::getStatus, ARTICLE_STATUS_PUBLISHED)
@@ -184,7 +184,7 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         Integer viewCount = redisCache.getCacheMapValue("article:viewCount", id.toString());
         leBlogArticle.setViewCount(viewCount.longValue());
 
-        LeBlogArticleDetailVO leBlogArticleDetailVo = BeanCopyUtils.copyBean(leBlogArticle, LeBlogArticleDetailVO.class);
+        ClientArticleDetailVO leBlogArticleDetailVo = BeanCopyUtils.copyBean(leBlogArticle, ClientArticleDetailVO.class);
 
 
         LeBlogCategory leBlogCategory = leBlogCategoryMapper.selectById(leBlogArticle.getCategoryId());

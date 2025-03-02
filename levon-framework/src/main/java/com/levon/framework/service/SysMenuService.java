@@ -2,8 +2,8 @@ package com.levon.framework.service;
 
 import com.levon.framework.domain.entry.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.levon.framework.domain.vo.LeBlogAdminMenuRouterVO;
-import com.levon.framework.domain.vo.LeBlogAdminUserInfoVO;
+import com.levon.framework.domain.vo.AdminMenuRouterVO;
+import com.levon.framework.domain.vo.AdminUserInfoVO;
 
 /**
  * @author leivik
@@ -17,21 +17,21 @@ public interface SysMenuService extends IService<SysMenu> {
      *
      * @return
      */
-    LeBlogAdminUserInfoVO getAdminInfo();
+    AdminUserInfoVO getAdminInfo();
 
     /**
      * 获取管理员权限信息
      *
      * @return
      */
-    LeBlogAdminUserInfoVO getOtherAdminInfo();
+    AdminUserInfoVO getOtherAdminInfo();
 
     /**
      * 获取所有菜单路由信息
      *
      * @return LeBlogAdminMenuRouterVO 返回封装的菜单路由
      */
-    LeBlogAdminMenuRouterVO selectAllMenuRouter();
+    AdminMenuRouterVO selectAllMenuRouter();
 
     /**
      * 根据用户 ID 获取该用户的菜单路由信息
@@ -39,5 +39,5 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param userId 用户id
      * @return 返回封装用户的菜单路由
      */
-    LeBlogAdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId);
+    AdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId);
 }

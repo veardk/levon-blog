@@ -2,7 +2,7 @@ package com.levon.framework.service;
 
 import com.levon.framework.domain.entry.LeBlogLink;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.levon.framework.domain.vo.LeBlogLinkVO;
+import com.levon.framework.domain.vo.ClientLinkVO;
 
 import java.util.List;
 
@@ -16,5 +16,5 @@ public interface LeBlogLinkService extends IService<LeBlogLink> {
      * 获取所有友联列表
      * @return
      */
-    List<LeBlogLinkVO> getAllLink();
+    List<ClientLinkVO> getAllLink();
 }

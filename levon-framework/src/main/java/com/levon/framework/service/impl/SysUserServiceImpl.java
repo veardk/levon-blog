@@ -6,10 +6,10 @@ import com.levon.framework.common.enums.AppHttpCodeEnum;
 import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.common.util.SecurityUtils;
-import com.levon.framework.domain.dto.UserInfoCreateValidationDTO;
-import com.levon.framework.domain.dto.UserInfoUpdateValidationDTO;
+import com.levon.framework.domain.dto.ClientUserInfoCreateValidationDTO;
+import com.levon.framework.domain.dto.ClientUserInfoUpdateValidationDTO;
 import com.levon.framework.domain.entry.SysUser;
-import com.levon.framework.domain.vo.SysUserInfoVO;
+import com.levon.framework.domain.vo.UserInfoVO;
 import com.levon.framework.mapper.SysUserMapper;
 import com.levon.framework.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public SysUserInfoVO getUserInfo() {
+    public UserInfoVO getUserInfo() {
 
         SysUser sysUser = sysUserMapper.selectById(SecurityUtils.getUserId());
 
@@ -37,7 +37,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "账户异常");
         }
 
-        return BeanCopyUtils.copyBean(sysUser, SysUserInfoVO.class);
+        return BeanCopyUtils.copyBean(sysUser, UserInfoVO.class);
     }
 
     /**
@@ -46,7 +46,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param userInfoDTO
      */
     @Override
-    public void updateUserInfo(UserInfoUpdateValidationDTO userInfoDTO) {
+    public void updateUserInfo(ClientUserInfoUpdateValidationDTO userInfoDTO) {
         SysUser sysUser = BeanCopyUtils.copyBean(userInfoDTO, SysUser.class);
         Long userId = SecurityUtils.getUserId();
         sysUser.setUpdateBy(userId);
@@ -63,7 +63,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 返回注册成功的响应结果
      */
     @Override
-    public void register(UserInfoCreateValidationDTO userInfoCreateValidationDTO) {
+    public void register(ClientUserInfoCreateValidationDTO userInfoCreateValidationDTO) {
         checkUserInfoExist(userInfoCreateValidationDTO);
 
         SysUser sysUser = BeanCopyUtils.copyBean(userInfoCreateValidationDTO, SysUser.class);
@@ -81,7 +81,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     /**
      * 检查用户信息是否已存在
      */
-    private void checkUserInfoExist(UserInfoCreateValidationDTO userInfo) {
+    private void checkUserInfoExist(ClientUserInfoCreateValidationDTO userInfo) {
         boolean userNameExists = sysUserMapper.exists(new LambdaQueryWrapper<SysUser>()
                 .eq(SysUser::getUserName, userInfo.getUserName()));
 

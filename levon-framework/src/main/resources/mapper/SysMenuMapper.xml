@@ -44,7 +44,7 @@
           AND m.`status` = 0
           AND m.`del_flag` = 0
     </select>
-    <select id="selectAllMenuRouter" resultType="com.levon.framework.domain.vo.MenuVO">
+    <select id="selectAllMenuRouter" resultType="com.levon.framework.domain.vo.AdminMenuVO">
         SELECT DISTINCT m.id,
                         m.menu_name,
                         m.parent_id,
@@ -64,7 +64,7 @@
         ORDER BY m.parent_id,
                  m.order_num
     </select>
-    <select id="selectMenuRouterTreeByUserId" resultType="com.levon.framework.domain.vo.MenuVO">
+    <select id="selectMenuRouterTreeByUserId" resultType="com.levon.framework.domain.vo.AdminMenuVO">
         SELECT DISTINCT m.id,
                         m.menu_name,
                         m.parent_id,

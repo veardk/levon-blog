@@ -1,6 +1,6 @@
 package com.levon.framework.service;
 
-import com.levon.framework.domain.dto.CommentValidationDTO;
+import com.levon.framework.domain.dto.ClientCommentCreateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogComment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.vo.PageVO;
@@ -28,5 +28,5 @@ public interface LeBlogCommentService extends IService<LeBlogComment> {
      * @param commentValidateDTO
      * @return
      */
-    void addComment(CommentValidationDTO commentValidateDTO);
+    void addComment(ClientCommentCreateValidationDTO commentValidateDTO);
 }

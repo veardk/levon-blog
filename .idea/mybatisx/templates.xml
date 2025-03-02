@@ -68,8 +68,8 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="SysRole" />
-                  <option name="tableName" value="sys_role" />
+                  <option name="className" value="LeBlogArticleTag" />
+                  <option name="tableName" value="le_blog_article_tag" />
                 </TableUIInfo>
               </list>
             </option>

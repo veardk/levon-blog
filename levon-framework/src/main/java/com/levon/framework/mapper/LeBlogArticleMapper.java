@@ -4,12 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.levon.framework.domain.vo.LeBlogArticleListVO;
+import com.levon.framework.domain.vo.ClientArticleListVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
 * @author leivik
@@ -19,11 +18,11 @@ import java.util.Map;
 */
 @Mapper
 public interface LeBlogArticleMapper extends BaseMapper<LeBlogArticle> {
-    IPage<LeBlogArticleListVO> articleListByXml(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
+    IPage<ClientArticleListVO> articleListByXml(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
 
-    Page<LeBlogArticleListVO> articleListWithPage(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
+    Page<ClientArticleListVO> articleListWithPage(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
 
-    List<LeBlogArticleListVO> articleListWithList(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
+    List<ClientArticleListVO> articleListWithList(Page<LeBlogArticle> page, @Param("categoryId") Long categoryId);
 
 }
 

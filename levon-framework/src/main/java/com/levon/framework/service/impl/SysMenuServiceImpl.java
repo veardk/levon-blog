@@ -8,9 +8,9 @@ import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.common.util.SecurityUtils;
 import com.levon.framework.domain.entry.SysMenu;
-import com.levon.framework.domain.vo.LeBlogAdminMenuRouterVO;
-import com.levon.framework.domain.vo.LeBlogAdminUserInfoVO;
-import com.levon.framework.domain.vo.MenuVO;
+import com.levon.framework.domain.vo.AdminMenuRouterVO;
+import com.levon.framework.domain.vo.AdminUserInfoVO;
+import com.levon.framework.domain.vo.AdminMenuVO;
 import com.levon.framework.domain.vo.UserInfoVO;
 import com.levon.framework.mapper.SysRoleMapper;
 import com.levon.framework.service.SysMenuService;
@@ -46,7 +46,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return
      */
     @Override
-    public LeBlogAdminUserInfoVO getAdminInfo() {
+    public AdminUserInfoVO getAdminInfo() {
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.in(SysMenu::getMenuType, MenuConstants.MENU_TYPE_MENU, MenuConstants.MENU_TYPE_BUTTON)
                 .eq(SysMenu::getStatus, MenuConstants.MENU_STATUS_NORMAL);
@@ -62,7 +62,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
 
         // 超级管理员信息
         UserInfoVO userInfo = BeanCopyUtils.copyBean(SecurityUtils.getLoginUser().getUser(), UserInfoVO.class);
-        return new LeBlogAdminUserInfoVO(permList, role, userInfo);
+        return new AdminUserInfoVO(permList, role, userInfo);
     }
 
     /**
@@ -71,7 +71,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return
      */
     @Override
-    public LeBlogAdminUserInfoVO getOtherAdminInfo() {
+    public AdminUserInfoVO getOtherAdminInfo() {
         Long userId = SecurityUtils.getUserId();
 
         // 查询管理员权限信息
@@ -87,7 +87,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         }
         // 封装返回
         UserInfoVO userInfo = BeanCopyUtils.copyBean(SecurityUtils.getLoginUser().getUser(), UserInfoVO.class);
-        return new LeBlogAdminUserInfoVO(permsList, roleKeyList, userInfo);
+        return new AdminUserInfoVO(permsList, roleKeyList, userInfo);
     }
 
     /**
@@ -96,16 +96,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return LeBlogAdminMenuRouterVO 返回封装的菜单路由
      */
     @Override
-    public LeBlogAdminMenuRouterVO selectAllMenuRouter() {
-        List<MenuVO> menuRouterList = sysMenuMapper.selectAllMenuRouter();
+    public AdminMenuRouterVO selectAllMenuRouter() {
+        List<AdminMenuVO> menuRouterList = sysMenuMapper.selectAllMenuRouter();
         if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
         // 转换为树形结构
-        List<MenuVO> menuTree = buildMenuTree(menuRouterList);
+        List<AdminMenuVO> menuTree = buildMenuTree(menuRouterList);
 
-        return new LeBlogAdminMenuRouterVO(menuTree);
+        return new AdminMenuRouterVO(menuTree);
     }
 
     /**
@@ -115,17 +115,17 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return 返回封装用户的菜单路由
      */
     @Override
-    public LeBlogAdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId) {
-        List<MenuVO> menuRouterList = sysMenuMapper.selectMenuRouterTreeByUserId(userId);
+    public AdminMenuRouterVO selectMenuRouterTreeByUserId(Long userId) {
+        List<AdminMenuVO> menuRouterList = sysMenuMapper.selectMenuRouterTreeByUserId(userId);
 
         if (menuRouterList == null || menuRouterList.isEmpty()) {
             throw new SystemException(AppHttpCodeEnum.ADMIN_MENU_NOT_FOUND);
         }
 
         // 转换为树形结构
-        List<MenuVO> menuTree = buildMenuTree(menuRouterList);
+        List<AdminMenuVO> menuTree = buildMenuTree(menuRouterList);
 
-        return new LeBlogAdminMenuRouterVO(menuTree);
+        return new AdminMenuRouterVO(menuTree);
     }
 
     /**
@@ -134,13 +134,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @param menuList 菜单列表
      * @return 树形结构的菜单列表
      */
-    private List<MenuVO> buildMenuTree(List<MenuVO> menuList) {
+    private List<AdminMenuVO> buildMenuTree(List<AdminMenuVO> menuList) {
         if(menuList == null){
             return new ArrayList<>();
         }
 
-        Map<Long, MenuVO> menuMap = new HashMap<>();
-        List<MenuVO> rootMenus = new ArrayList<>();
+        Map<Long, AdminMenuVO> menuMap = new HashMap<>();
+        List<AdminMenuVO> rootMenus = new ArrayList<>();
         // 并将menu放入map中,key为 menu.id
         menuList.forEach(menu -> {
             menu.setChildren(new ArrayList<>());
@@ -153,7 +153,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
                 rootMenus.add(menu);
             } else {
                 // 找子菜单对应的根菜单
-                MenuVO parent = menuMap.get(menu.getParentId());
+                AdminMenuVO parent = menuMap.get(menu.getParentId());
                 // 将子菜单加入到根菜单的 children 列表
                 if (parent != null) {
                     parent.getChildren().add(menu);

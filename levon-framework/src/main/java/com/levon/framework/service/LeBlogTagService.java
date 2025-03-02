@@ -1,10 +1,11 @@
 package com.levon.framework.service;
 
-import com.levon.framework.domain.dto.TagCreateValidationDTO;
-import com.levon.framework.domain.dto.TagUpdateValidationDTO;
+import com.levon.framework.domain.dto.AdminTagCreateValidationDTO;
+import com.levon.framework.domain.dto.AdminTagUpdateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogTag;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.levon.framework.domain.vo.LeBlogTagVO;
+import com.levon.framework.domain.vo.AdminTagListVO;
+import com.levon.framework.domain.vo.AdminTagVO;
 import com.levon.framework.domain.vo.PageVO;
 
 import java.util.List;
@@ -33,14 +34,14 @@ public interface LeBlogTagService extends IService<LeBlogTag> {
      * @param id 标签的唯一标识符
      * @return 返回包含标签详细信息的对象
      */
-    LeBlogTagVO getTagDetail(Long id);
+    AdminTagListVO getTagDetail(Long id);
 
     /**
      * 更新标签信息
      *
      * @param updateRequest 标签更新请求对象，包含更新的标签信息
      */
-    void updateTag(TagUpdateValidationDTO updateRequest);
+    void updateTag(AdminTagUpdateValidationDTO updateRequest);
 
     /**
      * 删除单个标签
@@ -61,7 +62,12 @@ public interface LeBlogTagService extends IService<LeBlogTag> {
      *
      * @param createRequest 标签创建请求对象，包含新标签的信息
      */
-    void createTag(TagCreateValidationDTO createRequest);
+    void createTag(AdminTagCreateValidationDTO createRequest);
 
-
+    /**
+     * 获取所有标签
+     *
+     * @return
+     */
+    List<AdminTagVO> getAllTag();
 }

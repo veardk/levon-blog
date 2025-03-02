@@ -123,6 +123,7 @@ public class UploadServiceImpl implements UploadService {
         return "Error";
     }
 
+    // TODO 优化上传图片
 //    private static final Logger logger = Logger.getLogger(UploadServiceImpl.class.getName());
 //    private static final String[] ALLOWED_TYPES = {".png", ".jpg"};
 //    @Value("${qiniu.accessKey}")

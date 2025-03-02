@@ -1,9 +1,9 @@
 package com.levon.framework.service;
 
-import com.levon.framework.domain.vo.LeBlogArticleDetailVO;
+import com.levon.framework.domain.vo.ClientArticleDetailVO;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.levon.framework.domain.vo.LeBlogHotArticleVO;
+import com.levon.framework.domain.vo.ClientHotArticleVO;
 import com.levon.framework.domain.vo.PageVO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public interface LeBlogArticleService extends IService<LeBlogArticle> {
      * 获取热门文章列表
      * @return
      */
-    List<LeBlogHotArticleVO> hotArticleList();
+    List<ClientHotArticleVO> hotArticleList();
 
     /**
      * 获取文章列表(mybatis方式)
@@ -36,7 +36,7 @@ public interface LeBlogArticleService extends IService<LeBlogArticle> {
 
     PageVO articleListWithList(Integer pageNum, Integer pageSize, Long categoryId);
 
-    LeBlogArticleDetailVO articleDetail(Long id);
+    ClientArticleDetailVO articleDetail(Long id);
 
     void updateViewCount(Long id);
 

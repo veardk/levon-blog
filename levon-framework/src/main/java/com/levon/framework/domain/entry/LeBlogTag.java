@@ -25,6 +25,11 @@ public class LeBlogTag implements Serializable {
     private String name;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 创建人的用户id
      */
     @TableField(fill = FieldFill.INSERT)
@@ -50,11 +55,6 @@ public class LeBlogTag implements Serializable {
      */
     @TableLogic
     private Integer delFlag;
-
-    /**
-     * 备注
-     */
-    private String remark;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -12,7 +12,7 @@
     <!--  子模块  -->
     <modules>
         <module>levon-framework</module> <!--通用-->
-        <module>levon-bolg</module>  <!--前台-->
+        <module>levon-client</module>  <!--前台-->
         <module>levon-admin</module> <!--后台-->
     </modules>
 

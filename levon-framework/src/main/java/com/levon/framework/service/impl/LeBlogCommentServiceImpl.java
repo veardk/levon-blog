@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.levon.framework.common.enums.AppHttpCodeEnum;
 import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
-import com.levon.framework.domain.dto.CommentValidationDTO;
+import com.levon.framework.domain.dto.ClientCommentCreateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogComment;
-import com.levon.framework.domain.vo.LeBlogCommentVO;
+import com.levon.framework.domain.vo.ClientCommentVO;
 import com.levon.framework.domain.vo.PageVO;
 import com.levon.framework.mapper.LeBlogArticleMapper;
 import com.levon.framework.mapper.SysUserMapper;
@@ -69,7 +69,7 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
             throw new RuntimeException("null");
         }
 
-        List<LeBlogCommentVO> leBlogCommentVoList = toCommentVoList(page.getRecords());
+        List<ClientCommentVO> leBlogCommentVoList = toCommentVoList(page.getRecords());
 
         // 添加子评论
         leBlogCommentVoList.forEach(rootCommentVo ->
@@ -85,9 +85,9 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
      * @param commentList
      * @return
      */
-    private List<LeBlogCommentVO> toCommentVoList(List<LeBlogComment> commentList) {
+    private List<ClientCommentVO> toCommentVoList(List<LeBlogComment> commentList) {
 
-        List<LeBlogCommentVO> commentVoList = BeanCopyUtils.copyBeanList(commentList, LeBlogCommentVO.class);
+        List<ClientCommentVO> commentVoList = BeanCopyUtils.copyBeanList(commentList, ClientCommentVO.class);
 
         commentVoList.stream()
                 .forEach(commentVo -> {
@@ -110,19 +110,19 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
      * @param rootCommentId 根评论id
      * @return
      */
-    private List<LeBlogCommentVO> getChildren(int commentType, Long rootCommentId) {
+    private List<ClientCommentVO> getChildren(int commentType, Long rootCommentId) {
         LambdaQueryWrapper<LeBlogComment> wrapper = new LambdaQueryWrapper<>();
 
         wrapper.eq(LeBlogComment::getRootId, rootCommentId)
                 .eq(LeBlogComment::getType, commentType)
                 .orderByAsc(LeBlogComment::getCreateTime);
 
-        List<LeBlogCommentVO> childrenVoList = toCommentVoList(list(wrapper));
+        List<ClientCommentVO> childrenVoList = toCommentVoList(list(wrapper));
 
         return childrenVoList;
     }
 
-    //TODO 利用tree获取评论列表
+    //OPTIMIZE 利用tree获取评论列表
 
 
 
@@ -177,7 +177,7 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
      * @return
      */
     @Override
-    public void addComment(CommentValidationDTO commentValidateDTO) {
+    public void addComment(ClientCommentCreateValidationDTO commentValidateDTO) {
         LeBlogArticle leBlogArticle = leBlogArticleMapper.selectById(commentValidateDTO.getArticleId());
         if (Objects.isNull(leBlogArticle)) {
             throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "文章不存在或被删除");

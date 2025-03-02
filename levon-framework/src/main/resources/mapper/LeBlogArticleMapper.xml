@@ -30,7 +30,7 @@
         update_by,update_time,del_flag
     </sql>
 
-    <select id="articleListByXml" resultType="com.levon.framework.domain.vo.LeBlogArticleListVO">
+    <select id="articleListByXml" resultType="com.levon.framework.domain.vo.ClientArticleListVO">
         SELECT
         a.id,
         a.title,
@@ -58,7 +58,7 @@
         a.is_top DESC
     </select>
 
-    <select id="articleListWithPage" resultType="com.levon.framework.domain.vo.LeBlogArticleListVO">
+    <select id="articleListWithPage" resultType="com.levon.framework.domain.vo.ClientArticleListVO">
         SELECT
         a.id,
         a.title,
@@ -86,7 +86,7 @@
         a.is_top DESC
     </select>
 
-    <select id="articleListWithList" resultType="com.levon.framework.domain.vo.LeBlogArticleListVO">
+    <select id="articleListWithList" resultType="com.levon.framework.domain.vo.ClientArticleListVO">
         SELECT
         a.id,
         a.title,
