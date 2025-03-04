@@ -9,10 +9,12 @@ import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.domain.dto.AdminTagCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminTagUpdateValidationDTO;
+import com.levon.framework.domain.entry.LeBlogArticleTag;
 import com.levon.framework.domain.entry.LeBlogTag;
 import com.levon.framework.domain.vo.AdminTagListVO;
 import com.levon.framework.domain.vo.AdminTagVO;
 import com.levon.framework.domain.vo.PageVO;
+import com.levon.framework.service.LeBlogArticleTagService;
 import com.levon.framework.service.LeBlogTagService;
 import com.levon.framework.mapper.LeBlogTagMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -34,16 +36,19 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
     @Autowired
     private LeBlogTagMapper leBlogTagMapper;
 
+    @Autowired
+    private LeBlogArticleTagService leBlogArticleTagService;
+
     /**
-     * 获取所有标签
+     * 获取标签列表
      *
-     * @return
+     * @return 标签列表结果VO
      */
     @Override
     public List<AdminTagVO> getAllTag() {
         List<LeBlogTag> tagList = list();
 
-        if (tagList.isEmpty() || tagList.size() == 0) {
+        if (tagList.isEmpty()) {
             return new ArrayList<>();
         }
         return BeanCopyUtils.copyBeanList(tagList, AdminTagVO.class);
@@ -115,7 +120,7 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
     }
 
     /**
-     * 删除单个标签
+     * 删除标签
      *
      * @param id 标签的唯一标识符
      */
@@ -124,13 +129,22 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
         Optional.ofNullable(getById(id))
                 .orElseThrow(() -> new SystemException(AppHttpCodeEnum.TAG_NOT_FOUND, "Not found Tag ID:" + id));
 
+        // 删除文章与标签关联表中的记录
+        LambdaQueryWrapper<LeBlogArticleTag> wrapper = new LambdaQueryWrapper<LeBlogArticleTag>()
+                .eq(LeBlogArticleTag::getTagId, id);
+
+        if (!leBlogArticleTagService.remove(wrapper)) {
+            log.error("关联表删除失败 Tag ID: {}", id);
+            throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "关联表删除失败 Tag ID: : " + id);
+        }
+        log.info("关联表删除成功 tag ID: {}", id);
+
         if (!removeById(id)) {
             log.error("Failed to delete the tag whit Tag ID: {}", id);
             throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "Failed to delete the tag whit Tag ID: " + id);
         }
         log.info("Successfully delete tag with ID: {}", id);
 
-        // TODO 该标签删除后，文章与标签关联表中的记录也要删除
     }
 
     /**
@@ -139,38 +153,9 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
      * @param ids 标签的唯一标识符列表
      */
     @Override
-    public void deleteTags(List<Long> ids) {
-        validateIdsExist(ids);
-
-        if (!removeBatchByIds(ids)) {
-            log.error("Failed to delete the tag whit Tag ID: {}", ids.toString());
-            throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "Failed to delete the tag whit Tag ID: " + ids.toString());
-        }
-        log.info("Successfully delete tag with ID: {}", ids.toString());
-
-        // TODO 该标签删除后，填写对应文章的分类赋值为null或者" "
-    }
-
-    /**
-     * 验证给定的标签 ID 列表中的每个 ID 是否存在于数据库中。
-     * <p>
-     * 如果列表中有任何 ID 不存在，将记录错误并抛出异常。
-     *
-     * @param ids 标签的唯一标识符列表
-     * @throws SystemException 如果存在无效的标签 ID，则抛出该异常
-     */
-    private void validateIdsExist(List<Long> ids) {
-        List<LeBlogTag> existingTags = leBlogTagMapper.selectBatchIds(ids);
-        if (existingTags.size() != ids.size()) {
-            // 有不存在的 ID
-            Set<Long> existingIds = existingTags.stream()
-                    .map(LeBlogTag::getId)
-                    .collect(Collectors.toSet());
-            List<Long> nonExistentIds = ids.stream()
-                    .filter(id -> !existingIds.contains(id))
-                    .collect(Collectors.toList());
-            log.error("Failed to delete tags with IDs: {}", nonExistentIds);
-            throw new SystemException(AppHttpCodeEnum.DATA_NOT_FOUND, "Tags with IDs " + nonExistentIds + " not found.");
+    public void beachDel(List<Long> ids) {
+        if(Objects.nonNull(ids)){
+            ids.forEach(this::deleteTag);
         }
     }
 
@@ -190,12 +175,35 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
             log.error("Failed to create the new tag with name : {}", createRequest.getName());
             throw new SystemException(AppHttpCodeEnum.CREATE_FAILED, "Failed to create new tag with name: " + createRequest.getName());
         }
-        log.info("Successfully create tag :", createRequest.getName());
+        log.info("Successfully create tag : {}", createRequest.getName());
     }
 
+    /**
+     * 验证给定的标签 ID 列表中的每个 ID 是否存在于数据库中。
+     * <p>
+     * 如果列表中有任何 ID 不存在，将记录错误并抛出异常。
+     *
+     * @param ids 标签的唯一标识符列表
+     * @throws SystemException 如果存在无效的标签 ID，则抛出该异常
+     */
+    @Override
+    public void validateIdsExist(List<Long> ids) {
+        List<LeBlogTag> existingTags = leBlogTagMapper.selectBatchIds(ids);
+        if (existingTags.size() != ids.size()) {
+            // 有不存在的 ID
+            Set<Long> existingIds = existingTags.stream()
+                    .map(LeBlogTag::getId)
+                    .collect(Collectors.toSet());
+            List<Long> nonExistentIds = ids.stream()
+                    .filter(id -> !existingIds.contains(id))
+                    .collect(Collectors.toList());
+            log.error("Failed to delete tags with IDs: {}", nonExistentIds);
+            throw new SystemException(AppHttpCodeEnum.DATA_NOT_FOUND, "Tags with IDs " + nonExistentIds + " not found.");
+        }
+    }
 
     /**
-     * 判断标签是否存在
+     * 判断标签名称是否存在
      *
      * @param name 标签姓名
      * @return 标签存在放回true，否则返回false
@@ -205,9 +213,4 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
                         .eq(LeBlogTag::getName, name)))
                 .isPresent();
     }
-
 }
-
-
-
-

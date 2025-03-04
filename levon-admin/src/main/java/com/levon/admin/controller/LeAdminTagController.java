@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 @RequestMapping("/content/tag")
 public class LeAdminTagController {
@@ -23,10 +24,9 @@ public class LeAdminTagController {
 
     /**
      * 获取所有标签
-     *
      */
     @GetMapping("/listAllTag")
-    public ResponseResult getAllTag(){
+    public ResponseResult getAllTag() {
         return ResponseResult.okResult(leBlogTagService.getAllTag());
     }
 
@@ -59,13 +59,13 @@ public class LeAdminTagController {
      */
     @GetMapping("{id}")
     @SystemLog("查询标签详细")
-    public ResponseResult getTagDetail(@NotNull(message = "id不能为空")@PathVariable Long id) {
+    public ResponseResult getTagDetail(@NotNull(message = "id不能为空") @PathVariable Long id) {
         return ResponseResult.okResult(leBlogTagService.getTagDetail(id));
     }
 
     /**
      * 新增标签
-     *
+     * <p>
      * 该方法接收一个标签创建请求，调用服务层方法进行标签的创建，并返回操作结果。
      *
      * @param createRequest 标签创建请求对象，包含标签的相关信息
@@ -80,7 +80,7 @@ public class LeAdminTagController {
 
     /**
      * 修改标签
-     *
+     * <p>
      * 该方法接收一个标签更新请求，调用服务层方法进行标签的更新，并返回操作结果。
      *
      * @param updateRequest 标签更新请求对象，包含标签的相关信息
@@ -95,7 +95,7 @@ public class LeAdminTagController {
 
     /**
      * 删除标签
-     *
+     * <p>
      * 该方法接收一个包含多个标签 ID 的字符串，解析后调用服务层方法删除对应的标签。
      *
      * @param tagIds 以逗号分隔的标签 ID 列表
@@ -103,7 +103,7 @@ public class LeAdminTagController {
      */
     @DeleteMapping("/{tagIds}")
     @SystemLog("删除标签")
-    public ResponseResult deleteTags(@NotNull(message = "ids不能为空") @PathVariable("tagIds")  String tagIds) {
+    public ResponseResult deleteTags(@NotNull(message = "ids不能为空") @PathVariable("tagIds") String tagIds) {
         List<Long> ids = Arrays.stream(tagIds.split(","))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
@@ -111,7 +111,7 @@ public class LeAdminTagController {
         if (ids.size() == 1) {
             leBlogTagService.deleteTag(ids.get(0));
         } else {
-            leBlogTagService.deleteTags(ids);
+            leBlogTagService.beachDel(ids);
         }
         return ResponseResult.okResult();
     }

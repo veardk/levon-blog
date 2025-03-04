@@ -7,14 +7,15 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientArticleDetailVO implements Serializable {
+public class AdminArticleListVO implements Serializable {
+
     /**
-     * 
+     * 文章id
      */
     private Long id;
 
@@ -29,21 +30,24 @@ public class ClientArticleDetailVO implements Serializable {
     private String content;
 
     /**
-     * 所属分类id
+     * 文章摘要
+     */
+    private String summary;
+
+    /**
+     * 分类id
      */
     private Long categoryId;
 
     /**
-     * 分类名称
+     * 状态（0已发布，1草稿）
      */
-    private String categoryName;
-
-    // TODO VO放回插入标签组: List<String> tgs;
+    private String status;
 
     /**
-     * 访问量
+     * 是否置顶（0否，1是）
      */
-    private Long viewCount;
+    private String isTop;
 
     /**
      * 是否允许评论 1是，0否
@@ -51,11 +55,30 @@ public class ClientArticleDetailVO implements Serializable {
     private String isComment;
 
     /**
-     * 
+     * 分类名称
+     */
+    private String categoryName;
+
+    /**
+     * 所属标签
+     */
+    private List<Long> tags;
+
+    /**
+     * 缩略图
+     */
+    private String thumbnail;
+
+    /**
+     * 访问量
+     */
+    private Long viewCount;
+
+    /**
+     *
      */
     private Date createTime;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
 }

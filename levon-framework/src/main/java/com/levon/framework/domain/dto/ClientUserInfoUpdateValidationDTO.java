@@ -4,10 +4,11 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class ClientUserInfoUpdateValidationDTO {
+public class ClientUserInfoUpdateValidationDTO implements Serializable {
     /**
      * 主键
      * @NotNull 用于确保 id 不能为空
@@ -42,5 +43,5 @@ public class ClientUserInfoUpdateValidationDTO {
     @Email(message = "邮箱格式不正确")
     private String email;
 
-
+    private static final long serialVersionUID = 1L;
 }

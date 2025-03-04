@@ -16,11 +16,16 @@ spring:
     database: 0  # 可省略，默认0
 mybatis-plus:
   configuration:
-    # 日志
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true # 开启驼峰命名
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志
   global-config:
     db-config:
       logic-delete-field: delFlag
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+  oss:
+    accessKey: R5_mkdDbG1o8OqC-tnjYSefdHtvkHNYVUWZy2YSz
+    secretKey: MVM_yH-8QvHy09NbvSd-8CpncEx1EX83laDKqsps
+    bucket: levon-blog
+    fileBucketUrl: http://ss6so06zb.hb-bkt.clouddn.com/ # 外链域名

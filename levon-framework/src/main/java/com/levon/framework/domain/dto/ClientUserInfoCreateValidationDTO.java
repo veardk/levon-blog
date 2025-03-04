@@ -4,10 +4,11 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Data
 @Accessors(chain = true)
-public class ClientUserInfoCreateValidationDTO {
+public class ClientUserInfoCreateValidationDTO implements Serializable {
 
     /**
      * 账号名
@@ -56,4 +57,5 @@ public class ClientUserInfoCreateValidationDTO {
     @Size(max = 100, message = "邮箱长度不能超过100个字符")
     private String email;
 
+    private static final long serialVersionUID = 1L;
 }

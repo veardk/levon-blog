@@ -55,7 +55,14 @@ public interface LeBlogTagService extends IService<LeBlogTag> {
      *
      * @param ids 标签的唯一标识符列表
      */
-    void deleteTags(List<Long> ids);
+    void beachDel(List<Long> ids);
+
+    /**
+     * 判断标签id 列表是否存在数据库中
+     *
+     * @param ids 标签列表
+     */
+    void validateIdsExist(List<Long> ids);
 
     /**
      * 创建新的标签

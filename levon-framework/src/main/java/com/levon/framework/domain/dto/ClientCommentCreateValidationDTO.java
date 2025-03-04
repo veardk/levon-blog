@@ -5,12 +5,13 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * 评论验证DTO
  */
 @Data
-public class ClientCommentCreateValidationDTO {
+public class ClientCommentCreateValidationDTO implements Serializable {
 
     /**
      * 文章ID，不能为空
@@ -47,4 +48,5 @@ public class ClientCommentCreateValidationDTO {
     @Size(min = 1, max = 500, message = "Content must be between 1 and 500 characters")
     private String content;
 
+    private static final long serialVersionUID = 1L;
 }

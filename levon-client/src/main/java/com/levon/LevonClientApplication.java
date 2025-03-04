@@ -3,18 +3,16 @@ package com.levon;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.levon")
 @MapperScan("com.levon.framework.mapper")
 @EnableScheduling
 @EnableSwagger2
-public class LevonBlogApplication {
+public class LevonClientApplication {
     public static void main(String[] args) {
-        SpringApplication.run(LevonBlogApplication.class, args);
+        SpringApplication.run(LevonClientApplication.class, args);
     }
 
 }

@@ -1,43 +1,42 @@
 package com.levon.framework.domain.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 分类表
- * @TableName le_blog_category
+ * 文章标签关联表
+ * @TableName le_blog_article_tag
  */
-@TableName(value ="le_blog_category")
+@TableName(value ="le_blog_article_tag")
 @Data
-public class LeBlogCategory implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class LeBlogArticleTag implements Serializable {
     /**
-     * 
+     * id
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /**
-     * 分类名
-     */
-    private String name;
+    public LeBlogArticleTag(Long articleId, Long tagId) {
+        this.articleId = articleId;
+        this.tagId = tagId;
+    }
 
     /**
-     * 父分类id，如果没有父分类为-1
+     * 文章id
      */
-    private Long pid;
+    private Long articleId;
 
     /**
-     * 描述
+     * 标签id
      */
-    private String description;
-
-    /**
-     * 状态0:正常,1禁用
-     */
-    private String status;
+    private Long tagId;
 
     /**
      * 创建人的用户id
@@ -68,4 +67,6 @@ public class LeBlogCategory implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+
 }

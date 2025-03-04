@@ -1,6 +1,5 @@
 package com.levon.framework.domain.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientArticleListVO implements Serializable {
 
+public class ClientArticleListVO implements Serializable {
     /**
      * 文章id
      */
@@ -34,7 +33,7 @@ public class ClientArticleListVO implements Serializable {
      */
     private String categoryName;
 
-    // TODO VO放回插入标签组
+    // TODO VO放回插入标签组: List<String> tgs;
     private List<String> tagName;
 
     /**
@@ -51,7 +50,6 @@ public class ClientArticleListVO implements Serializable {
      *
      */
     private Date createTime;
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 }

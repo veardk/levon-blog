@@ -1,4 +1,4 @@
-package com.levon.admin.filter;
+package com.levon.client.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.levon.framework.common.enums.AppHttpCodeEnum;
@@ -25,7 +25,7 @@ import java.util.Objects;
  * 登录校验过滤器:获取token ->解析token获取其中的userid -> 从redis中获取用户信息 -> 存入SecurityContextHolder
  */
 @Component
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
+public class ClientJwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private RedisCache redisCache;
@@ -54,7 +54,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         //从redis中获取用户信息
-        LoginUser loginUser = redisCache.getCacheObject("blog_admin_login:" + userId);
+        LoginUser loginUser = redisCache.getCacheObject("blog_login:" + userId);
         //如果获取不到
         if(Objects.isNull(loginUser)){
             //说明登录过期  提示重新登录
