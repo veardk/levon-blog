@@ -24,8 +24,8 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
-  oss:
-    accessKey: R5_mkdDbG1o8OqC-tnjYSefdHtvkHNYVUWZy2YSz
-    secretKey: MVM_yH-8QvHy09NbvSd-8CpncEx1EX83laDKqsps
-    bucket: levon-blog
-    fileBucketUrl: http://ss6so06zb.hb-bkt.clouddn.com/ # 外链域名
+oss:
+  accessKey: R5_mkdDbG1o8OqC-tnjYSefdHtvkHNYVUWZy2YSz
+  secretKey: MVM_yH-8QvHy09NbvSd-8CpncEx1EX83laDKqsps
+  bucket: levon-blog
+  fileBucketUrl: http://ss6so06zb.hb-bkt.clouddn.com/ # 外链域名

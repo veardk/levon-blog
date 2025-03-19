@@ -27,7 +27,7 @@ public class UploadServiceImpl implements UploadService {
     private OSSProperties ossProperties;
 
     private static final Logger logger = Logger.getLogger(UploadServiceImpl.class.getName());
-    private static final String[] ALLOWED_TYPES = {".png", ".jpg"};
+    private static final String[] ALLOWED_TYPES = {".png", ".jpg", ".jpeg"};
 
     /**
      * 上传图片
@@ -39,6 +39,10 @@ public class UploadServiceImpl implements UploadService {
     public String uploadImg(MultipartFile img) {
 
         String originalFilename = img.getOriginalFilename();
+
+        if(originalFilename == null){
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
 
         // 判断文件类型
         if (!isValidFileType(originalFilename)) {
@@ -57,7 +61,7 @@ public class UploadServiceImpl implements UploadService {
      *
      * @param img    图片文件
      * @param imgKey 图片在OSS中的路径和命名
-     * @retun String 外链访问的 URL
+     * @return String 外链访问的 URL
      */
     private String uploadOss(MultipartFile img, String imgKey) {
         if (ossProperties == null) {

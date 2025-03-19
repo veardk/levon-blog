@@ -129,20 +129,24 @@ public class LeBlogTagServiceImpl extends ServiceImpl<LeBlogTagMapper, LeBlogTag
         Optional.ofNullable(getById(id))
                 .orElseThrow(() -> new SystemException(AppHttpCodeEnum.TAG_NOT_FOUND, "Not found Tag ID:" + id));
 
-        // 删除文章与标签关联表中的记录
+        // 如果存在删除文章与标签关联表中的记录
         LambdaQueryWrapper<LeBlogArticleTag> wrapper = new LambdaQueryWrapper<LeBlogArticleTag>()
                 .eq(LeBlogArticleTag::getTagId, id);
+        List<LeBlogArticleTag> result = leBlogArticleTagService.list(wrapper);
 
-        if (!leBlogArticleTagService.remove(wrapper)) {
-            log.error("关联表删除失败 Tag ID: {}", id);
-            throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "关联表删除失败 Tag ID: : " + id);
+        if(result != null && result.size() > 0){
+            if (!leBlogArticleTagService.remove(wrapper)) {
+                log.error("关联表删除失败 Tag ID: {}", id);
+                throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "关联表删除失败 Tag ID: : " + id);
+            }
+            log.info("关联表删除成功 tag ID: {}", id);
         }
-        log.info("关联表删除成功 tag ID: {}", id);
 
         if (!removeById(id)) {
             log.error("Failed to delete the tag whit Tag ID: {}", id);
             throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "Failed to delete the tag whit Tag ID: " + id);
         }
+
         log.info("Successfully delete tag with ID: {}", id);
 
     }

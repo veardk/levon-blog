@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LeBlogAdminLoginServiceImpl implements LeBlogAdminLoginService {
@@ -50,7 +51,7 @@ public class LeBlogAdminLoginServiceImpl implements LeBlogAdminLoginService {
         String jwt = JwtUtil.generateToken(userId);
 
         //把用户信息存入redis,  (blog_admin_login:1 : loginUser)
-        redisCache.setCacheObject("blog_admin_login:" + userId, loginUser);
+        redisCache.setCacheObject("blog_admin_login:" + userId, loginUser, 24, TimeUnit.HOURS);
 
         //把token封装 返回
         Map<String, String> map = new HashMap<>();

@@ -17,8 +17,8 @@ public class LeClientLoginController {
 
     /**
      * 用户登陆
-     * @param user
-     * @return
+     * @param user UserLoginDTO 包含用户登录信息的DTO
+     * @return ResponseResult 包含登录结果的响应结果
      */
     @SystemLog("用户登陆")
     @PostMapping("/login")
@@ -28,7 +28,7 @@ public class LeClientLoginController {
 
     /**
      * 用户退出
-     * @return
+     * @return ResponseResult 操作成功的响应结果
      */
     @SystemLog("用户退出")
     @PostMapping("/logout")

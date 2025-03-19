@@ -25,8 +25,8 @@ public class LeAdminLoginController {
     /**
      * 管理员用户登陆
      *
-     * @param user
-     * @return
+     * @param user 用户登陆信息DTO
+     * @return ResponseResult
      */
     @SystemLog("管理员用户登陆")
     @PostMapping("/user/login")

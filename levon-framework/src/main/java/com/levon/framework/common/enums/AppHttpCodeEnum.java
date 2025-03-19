@@ -31,7 +31,8 @@ public enum AppHttpCodeEnum {
     UPLOAD_FAILED(521, "上传错误"),
     UNKNOWN_ERROR(522, "未知错误"),
     LINK_NOT_FOUND(523, "友链未找到"),
-    CHANGE_STATUS_ERROR(524, "修改状态异常");
+    CHANGE_STATUS_ERROR(524, "修改状态异常"),
+    EXPORT_ERROR(525, "导出失败");
 
 
     int code;

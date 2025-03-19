@@ -19,11 +19,10 @@ public class LeClientCommentController {
 
     /**
      * 评论列表
-     *
      * @param articleId 文章id
      * @param pageNum   当前页码
      * @param pageSize  页码大小
-     * @return
+     * @return ResponseResult 包含评论列表的响应结果
      */
     @SystemLog("评论列表")
     @GetMapping("/commentList")
@@ -35,9 +34,8 @@ public class LeClientCommentController {
 
     /**
      * 发表评论
-     *
-     * @param commentValidateDTO
-     * @return
+     * @param commentValidateDTO 评论DTO
+     * @return ResponseResult 操作成功的响应结果
      */
     @SystemLog("发表评论")
     @PostMapping
@@ -49,18 +47,12 @@ public class LeClientCommentController {
 
     /**
      * 友链评论列表
-     *
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * @param pageNum 当前页码，默认为1
+     * @param pageSize 每页大小，默认为10
+     * @return ResponseResult 包含友链评论列表的响应结果
      */
     @SystemLog("友链评论列表")
     @GetMapping("/linkCommentList")
-//    @ApiOperation(value = "友链评论列表", notes = "获取一页友链评论")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "pageNum", value = "页号"),
-//            @ApiImplicitParam(name = "pageSize", value = "每页大小")
-//    })
     public ResponseResult linkCommentList(@RequestParam(defaultValue = "1") Integer pageNum,
                                           @RequestParam(defaultValue = "10") Integer pageSize) {
         return ResponseResult.okResult(leBlogCommentService.commentList(CommentConstants.FRIEND_LINK_COMMENT, null, pageNum, pageSize));

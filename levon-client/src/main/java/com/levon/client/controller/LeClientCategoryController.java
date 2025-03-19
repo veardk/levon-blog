@@ -12,21 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/category")
 public class LeClientCategoryController {
 
-
-    /**
-     * dev  coding
-     */
-
     @Autowired
     private LeBlogCategoryService leBlogCategoryService;
 
     /**
      * 获取文章分类列表
-     * @return
+     * @return ResponseResult 包含文章分类列表的响应结果
      */
     @SystemLog("获取文章分类列表")
     @GetMapping("/getCategoryList")
-    public ResponseResult<Object> getCategoryList(){
+    public ResponseResult getCategoryList(){
         return ResponseResult.okResult(leBlogCategoryService.getCateGoryList());
     }
 }

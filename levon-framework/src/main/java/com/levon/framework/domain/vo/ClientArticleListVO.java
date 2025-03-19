@@ -33,8 +33,10 @@ public class ClientArticleListVO implements Serializable {
      */
     private String categoryName;
 
-    // TODO VO放回插入标签组: List<String> tgs;
-    private List<String> tagName;
+    /**
+     * 所属标签名
+     */
+    private List<String> tagNames;
 
     /**
      * 缩略图

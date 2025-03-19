@@ -1,19 +1,30 @@
 package com.levon.admin.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSON;
 import com.levon.framework.common.annotation.SystemLog;
 import com.levon.framework.common.enums.AppHttpCodeEnum;
 import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.response.ResponseResult;
 import com.levon.framework.domain.dto.AdminCategoryCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminCategoryUpdateValidationDTO;
+import com.levon.framework.domain.vo.AdminExcelCategoryVO;
 import com.levon.framework.service.LeBlogCategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/content/category")
+@Slf4j
 public class LeAdminCategoryController {
     @Autowired
     private LeBlogCategoryService leBlogCategoryService;
@@ -132,4 +144,53 @@ public class LeAdminCategoryController {
         leBlogCategoryService.toggleStatus(id);
         return ResponseResult.okResult();
     }
+
+     /**
+      * 导出分类为excel
+      *
+      * @param response 相应参数
+      */
+     @GetMapping("/export")
+     @SystemLog("导出分类")
+     public void export(HttpServletResponse response) {
+         try {
+             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+             response.setCharacterEncoding("utf-8");
+             String fileName = URLEncoder.encode("分类", StandardCharsets.UTF_8).replace("+", "%20");
+             response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
+
+             List<AdminExcelCategoryVO> excelData = leBlogCategoryService.exportData();
+
+             try (OutputStream os = response.getOutputStream()) {
+                 EasyExcel.write(os, AdminExcelCategoryVO.class)
+                         .sheet("分类数据")
+                         .doWrite(excelData);
+             } catch (IOException e) {
+                 // 捕获到 IOException，表示 Excel 写入失败
+                 try (OutputStream os = response.getOutputStream()){
+                     writeErrorResponse(os);
+                 }
+             }
+         } catch (Exception e) {
+             log.error("导出分类失败,出现错误：", e);
+         }
+     }
+
+     // TODO 通过excel文件导入插入分类
+    private void writeErrorResponse(OutputStream os) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            map.put("msg", "导出失败");
+            String jsonString = JSON.toJSONString(map);
+
+            // 将 JSON 字符串转换为 UTF-8 编码的字节数组
+            byte[] jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
+
+            os.write(jsonBytes);
+        } catch (IOException e) {
+            log.error("响应写入失败", e);
+        }
+    }
+
 }
