@@ -47,6 +47,10 @@ public class SecurityUtils {
      * @return 用户ID
      */
     public static Long getUserId() {
-        return getLoginUser().getUser().getId();
+        try {
+            return getLoginUser().getUser().getId();
+        } catch (IllegalStateException e) {
+            return -1L; // 返回默认值，避免抛出异常
+        }
     }
 }

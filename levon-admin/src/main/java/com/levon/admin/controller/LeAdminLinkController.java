@@ -94,7 +94,7 @@ public class LeAdminLinkController {
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
 
-        if (idList.size() == 0) {
+        if (idList.size() == 1) {
             leBlogLinkService.del(idList.get(0));
         } else {
             leBlogLinkService.baechDel(idList);

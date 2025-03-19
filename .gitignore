@@ -1,38 +1,61 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-### Mac OS ###
+# 忽略操作系统生成的文件
 .DS_Store
+Thumbs.db
+
+
+# 忽略 IDE 和编辑器相关文件
+.idea/                    # IntelliJ IDEA 配置文件
+.idea/*.xml
+*.iml
+*.sublime-workspace       # Sublime Text 工作空间文件
+*.sublime-project         # Sublime Text 项目文件
+.vscode/                  # VS Code 配置文件
+*.swp                     # Vim 临时文件
+
+# 忽略 Java 相关文件
+*.class                   # Java 编译后的字节码
+*.jar                     # Java 归档文件
+*.war                     # Web 应用归档文件
+target/                   # Maven/Gradle 构建输出目录
+
+# 忽略前端构建输出
+dist/                     # 打包后的文件（如 Webpack 或 Vite 输出）
+build/                    # 构建目录
+out/                      # 其他构建输出
+
+# 忽略日志文件
+*.log
+logs/
+*.log.*
+
+# 忽略环境配置文件
+.env                       # 环境变量文件
+*.env                     # 所有 .env 文件
+!.env.example             # 保留 .env.example 作为模板
+
+# 忽略数据库文件
+*.sql
+*.db
+
+# 忽略测试相关的临时文件
+coverage/                 # 测试覆盖率报告
+*.test                     # 测试文件（根据需要调整）
+
+# 忽略 macOS 系统文件
+._*
+
+# 忽略虚拟环境
+venv/                     # Python 虚拟环境
+env/                      # 其他虚拟环境
+
+# 忽略临时文件和备份
+*~
+*.bak
+*.backup
+
+# 忽略文档和媒体文件（可选）
+*.docx
+*.pdf
+*.png
+*.jpg
+*.gif

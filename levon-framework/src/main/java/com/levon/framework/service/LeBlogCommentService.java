@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.vo.PageVO;
 
 /**
-* @author leivik
-* @description 针对表【le_blog_comment(评论表)】的数据库操作Service
-* @createDate 2025-02-23 09:14:50
-*/
+ * @author leivik
+ * @description 针对表【le_blog_comment(评论表)】的数据库操作Service
+ * @createDate 2025-02-23 09:14:50
+ */
 public interface LeBlogCommentService extends IService<LeBlogComment> {
 
     /**
@@ -19,14 +19,16 @@ public interface LeBlogCommentService extends IService<LeBlogComment> {
      * @param articleId   文章id
      * @param pageNum     当前页码
      * @param pageSize    页码大小
-     * @return
+     * @return PageVO
      */
     PageVO commentList(int commentType, Long articleId, Integer pageNum, Integer pageSize);
 
     /**
      * 发表评论
-     * @param commentValidateDTO
-     * @return
+     *
+     * @param commentValidateDTO 评论DTO
      */
     void addComment(ClientCommentCreateValidationDTO commentValidateDTO);
+
+    void deleteComment(Long commentId);
 }

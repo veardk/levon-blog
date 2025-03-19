@@ -16,7 +16,7 @@ public class LeClientLinkController {
 
     /**
      * 所有友联列表
-     * @return
+     * @return ResponseResult 包含所有友联列表的响应结果
      */
     @SystemLog("所有友联列表")
     @GetMapping("/getAllLink")

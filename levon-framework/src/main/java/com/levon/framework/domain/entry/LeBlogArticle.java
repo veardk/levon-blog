@@ -1,13 +1,12 @@
 package com.levon.framework.domain.entry;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 文章表
@@ -63,7 +62,6 @@ public class LeBlogArticle implements Serializable {
      * 访问量
      */
     private Long viewCount;
-    // TODO 文章的访问量接口，数据要从redis中读取
 
     /**
      * 是否允许评论 1是，0否

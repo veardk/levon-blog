@@ -18,7 +18,7 @@ public class LeClientUserController {
 
     /**
      * 获取用户信息
-     * @return
+     * @return ResponseResult 包含用户信息的响应结果
      */
     @SystemLog("获取用户信息")
     @GetMapping("/userInfo")
@@ -28,8 +28,8 @@ public class LeClientUserController {
 
     /**
      * 编辑用户信息
-     * @param userInfoDTO 用户DTO
-     * @return
+     * @param userInfoDTO ClientUserInfoUpdateValidationDTO 包含需要更新的用户信息的DTO
+     * @return ResponseResult 操作成功的响应结果
      */
     @SystemLog("编辑用户信息")
     @PutMapping("/userInfo")
@@ -40,10 +40,8 @@ public class LeClientUserController {
 
     /**
      * 处理用户注册请求
-     * 该方法接收用户信息DTO进行用户注册，并返回操作结果。
-     *
-     * @param userInfoCreateValidationDTO 用户注册DTO，包含用户的必要注册信息，如用户名、密码、邮箱等
-     * @return 返回注册成功的响应结果
+     * @param userInfoCreateValidationDTO ClientUserInfoCreateValidationDTO 包含用户注册信息的DTO
+     * @return ResponseResult 注册成功的响应结果
      */
     @SystemLog("处理用户注册请求")
     @PostMapping("/register")

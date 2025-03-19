@@ -1,10 +1,11 @@
 package com.levon.framework.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.dto.AdminCategoryCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminCategoryUpdateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogCategory;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.vo.AdminCategoryListVO;
+import com.levon.framework.domain.vo.AdminExcelCategoryVO;
 import com.levon.framework.domain.vo.ClientCategoryVO;
 import com.levon.framework.domain.vo.PageVO;
 
@@ -77,5 +78,12 @@ public interface LeBlogCategoryService extends IService<LeBlogCategory> {
      * @param id 分类ID
      */
     void toggleStatus(Long id);
+
+    /**
+     * 导出分类数据
+     *
+     * @return 分类数据列表
+     */
+    List<AdminExcelCategoryVO> exportData();
 
 }

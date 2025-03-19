@@ -14,6 +14,7 @@ import com.levon.framework.domain.dto.AdminCategoryUpdateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogCategory;
 import com.levon.framework.domain.vo.AdminCategoryListVO;
+import com.levon.framework.domain.vo.AdminExcelCategoryVO;
 import com.levon.framework.domain.vo.ClientCategoryVO;
 import com.levon.framework.domain.vo.PageVO;
 import com.levon.framework.mapper.LeBlogCategoryMapper;
@@ -154,22 +155,25 @@ public class LeBlogCategoryServiceImpl extends ServiceImpl<LeBlogCategoryMapper,
         Optional.ofNullable(getById(id))
                 .orElseThrow(() -> new SystemException(AppHttpCodeEnum.DATA_NOT_FOUND, "Not Found Category ID: " + id));
 
-        // 绑定该分类的文章,赋值为0(默认分类)
-        LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<LeBlogArticle>()
-                .eq(LeBlogArticle::getCategoryId, id)
-                .set(LeBlogArticle::getCategoryId, 0L);
+        long count = leBlogArticleService.count(new LambdaQueryWrapper<LeBlogArticle>().eq(LeBlogArticle::getCategoryId, id));
 
-        if (!leBlogArticleService.update(updateWrapper)) {
-            log.error("修改为默认分类错误，分类ID {}", id);
-            throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "修改为默认分类错误，分类ID;" + id);
+        // 如果有文章绑定了该分类
+        if (count != 0) {
+            // 赋值为0(默认分类)
+            LambdaUpdateWrapper<LeBlogArticle> updateWrapper = new LambdaUpdateWrapper<LeBlogArticle>()
+                    .eq(LeBlogArticle::getCategoryId, id)
+                    .set(LeBlogArticle::getCategoryId, 0L);
+
+            if (!leBlogArticleService.update(updateWrapper)) {
+                log.error("修改为默认分类错误，分类ID {}", id);
+                throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "修改为默认分类错误，分类ID;" + id);
+            }
         }
-
         if (!removeById(id)) {
             log.error("Failed to delete the category with ID: {}", id);
             throw new SystemException(AppHttpCodeEnum.DELETE_FAILED, "Failed to delete the category with ID:" + id);
         }
         log.info("Successfully delete the category with ID: {}", id);
-
     }
 
     /**
@@ -214,6 +218,20 @@ public class LeBlogCategoryServiceImpl extends ServiceImpl<LeBlogCategoryMapper,
         return Optional.ofNullable(getOne(new LambdaQueryWrapper<LeBlogCategory>()
                         .eq(LeBlogCategory::getName, name)))
                 .isPresent();
+    }
+
+    /**
+     * 导出分类数据
+     *
+     * @return 分类数据列表
+     */
+    @Override
+    public List<AdminExcelCategoryVO> exportData() {
+        List<LeBlogCategory> categories = list();
+        if (categories == null || categories.isEmpty()) {
+            throw new SystemException(AppHttpCodeEnum.DATA_NOT_FOUND, "无分类数据可导出");
+        }
+        return BeanCopyUtils.copyBeanList(categories, AdminExcelCategoryVO.class);
     }
 
 }

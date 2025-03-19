@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 @Data
@@ -38,7 +39,10 @@ public class ClientArticleDetailVO implements Serializable {
      */
     private String categoryName;
 
-    // TODO VO放回插入标签组: List<String> tgs;
+    /**
+     * 所属标签名
+     */
+    private List<String> tagNames;
 
     /**
      * 访问量

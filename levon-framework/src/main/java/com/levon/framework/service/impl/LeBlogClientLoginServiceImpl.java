@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 //LeBlogLoginServiceImpl
@@ -56,7 +57,7 @@ public class LeBlogClientLoginServiceImpl implements LeBlogClientLoginService {
         String jwt = JwtUtil.generateToken(userId);
 
         //把用户信息存入redis,  (blog_login:1 : loginUser)
-        redisCache.setCacheObject("blog_login:" + userId, loginUser);
+        redisCache.setCacheObject("blog_login:" + userId, loginUser, 24, TimeUnit.HOURS);
 
         //把token和userinfo封装 返回
         //把User转换成UserInfoVo

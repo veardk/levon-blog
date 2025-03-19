@@ -17,7 +17,7 @@ public class LeClientUploadController {
     /**
      * 上传图片
      * @param img 图片文件
-     * @return
+     * @return ResponseResult 包含上传结果的响应结果
      */
     @SystemLog("上传图片")
     @PostMapping("/upload")

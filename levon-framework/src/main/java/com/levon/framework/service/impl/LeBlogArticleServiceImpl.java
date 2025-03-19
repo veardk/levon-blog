@@ -12,8 +12,10 @@ import com.levon.framework.domain.dto.AdminArticleCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminArticleUpdateValidationDTO;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogArticleTag;
+import com.levon.framework.domain.entry.LeBlogTag;
 import com.levon.framework.domain.vo.*;
 import com.levon.framework.mapper.LeBlogArticleMapper;
+import com.levon.framework.mapper.LeBlogTagMapper;
 import com.levon.framework.service.LeBlogArticleService;
 import com.levon.framework.service.LeBlogArticleTagService;
 import com.levon.framework.service.LeBlogCategoryService;
@@ -51,6 +53,9 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
 
     @Autowired
     private LeBlogTagService leBlogTagService;
+
+    @Autowired
+    private LeBlogTagMapper leBlogTagMapper;
 
 
     @Autowired
@@ -135,12 +140,17 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
                     String categoryName = getCategoryNameByArticle(article);
                     articleVo.setCategoryName(categoryName);
 
+                    // 获取所属标签名称
+                    List<String> tagNames = getTagNameListByArticleId(article.getId());
+                    articleVo.setTagNames(tagNames);
+
                     return articleVo;
                 })
                 .collect(Collectors.toList());
 
         return new PageVO(leBlogArticleListVo, page.getTotal());
     }
+
 
     /**
      * 前台：根据文章ID查询文章详情
@@ -165,6 +175,10 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         // 分类id->拿到分类名称 赋值
         String categoryName = getCategoryNameByArticle(leBlogArticle);
         leBlogArticleDetailVo.setCategoryName(categoryName);
+
+        // 获取所属标签名称
+        List<String> tagNames = getTagNameListByArticleId(leBlogArticleDetailVo.getId());
+        leBlogArticleDetailVo.setTagNames(tagNames);
 
         return leBlogArticleDetailVo;
     }
@@ -450,7 +464,26 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
                 .stream()
                 .map(LeBlogArticleTag::getTagId)
                 .collect(Collectors.toList());
+
         return tagsList;
+    }
+
+    /**
+     * 通过文章ID获取文章所属标签名称
+     *
+     * @param articleId 文章ID
+     * @return List<String> 标签姓名列表
+     */
+    private List<String> getTagNameListByArticleId(Long articleId) {
+        List<Long> tagList = getTagsByArticleId(articleId);
+
+        if(tagList.isEmpty()){
+            return Collections.emptyList();
+        }
+        return leBlogTagMapper.selectBatchIds(tagList)
+                .stream()
+                .map(LeBlogTag::getName)
+                .collect(Collectors.toList());
     }
 
     /**
