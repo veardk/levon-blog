@@ -19,7 +19,7 @@ public class LeAdminUploadController {
      * 上传图片
      *
      * @param img 图片文件
-     * @return
+     * @return url地址
      */
     @SystemLog("上传图片")
     @PostMapping("/upload")

@@ -3,11 +3,13 @@ package com.levon.framework.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.levon.framework.domain.dto.AdminCategoryCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminCategoryUpdateValidationDTO;
+import com.levon.framework.domain.dto.AdminExcelCategoryDTO;
 import com.levon.framework.domain.entry.LeBlogCategory;
 import com.levon.framework.domain.vo.AdminCategoryListVO;
 import com.levon.framework.domain.vo.AdminExcelCategoryVO;
 import com.levon.framework.domain.vo.ClientCategoryVO;
 import com.levon.framework.domain.vo.PageVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -86,4 +88,17 @@ public interface LeBlogCategoryService extends IService<LeBlogCategory> {
      */
     List<AdminExcelCategoryVO> exportData();
 
+    /**
+     * 导入分类数据
+     *
+     * @param file 导入的Excel文件
+     */
+    void importCategory(MultipartFile file);
+
+    /**
+     * 批量保存分类数据
+     *
+     * @param dtoList 分类数据列表
+     */
+    void saveBatchCategory(List<AdminExcelCategoryDTO> dtoList);
 }

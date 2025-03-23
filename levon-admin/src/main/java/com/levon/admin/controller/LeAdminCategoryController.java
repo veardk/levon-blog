@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -145,52 +146,87 @@ public class LeAdminCategoryController {
         return ResponseResult.okResult();
     }
 
-     /**
-      * 导出分类为excel
-      *
-      * @param response 相应参数
-      */
-     @GetMapping("/export")
-     @SystemLog("导出分类")
-     public void export(HttpServletResponse response) {
-         try {
-             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-             response.setCharacterEncoding("utf-8");
-             String fileName = URLEncoder.encode("分类", StandardCharsets.UTF_8).replace("+", "%20");
-             response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
-
-             List<AdminExcelCategoryVO> excelData = leBlogCategoryService.exportData();
-
-             try (OutputStream os = response.getOutputStream()) {
-                 EasyExcel.write(os, AdminExcelCategoryVO.class)
-                         .sheet("分类数据")
-                         .doWrite(excelData);
-             } catch (IOException e) {
-                 // 捕获到 IOException，表示 Excel 写入失败
-                 try (OutputStream os = response.getOutputStream()){
-                     writeErrorResponse(os);
-                 }
-             }
-         } catch (Exception e) {
-             log.error("导出分类失败,出现错误：", e);
-         }
-     }
-
-     // TODO 通过excel文件导入插入分类
-    private void writeErrorResponse(OutputStream os) {
+    /**
+     * 导出分类为Excel
+     * 
+     */
+    @GetMapping("/export")
+    @SystemLog("导出分类")
+    public void export(HttpServletResponse response) {
         try {
-            Map<String, Object> map = new HashMap<>();
-            map.put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            map.put("msg", "导出失败");
-            String jsonString = JSON.toJSONString(map);
+            // 设置下载文件的响应头
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            String fileName = URLEncoder.encode("分类数据", StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
 
-            // 将 JSON 字符串转换为 UTF-8 编码的字节数组
-            byte[] jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
+            // 获取导出数据
+            List<AdminExcelCategoryVO> excelData = leBlogCategoryService.exportData();
 
-            os.write(jsonBytes);
-        } catch (IOException e) {
-            log.error("响应写入失败", e);
+            // 写入Excel
+            try (OutputStream os = response.getOutputStream()) {
+                EasyExcel.write(os, AdminExcelCategoryVO.class)
+                        .sheet("分类数据")
+                        .doWrite(excelData);
+            } catch (IOException e) {
+                log.error("Excel写入失败", e);
+                writeErrorResponse(response, AppHttpCodeEnum.SYSTEM_ERROR.getCode(), e.getMessage());
+            }
+        } catch (SystemException e) {
+            log.error("导出分类失败，业务异常：{}", e.getMsg());
+            writeErrorResponse(response, e.getCode(), e.getMsg());
+        } catch (Exception e) {
+            log.error("导出分类失败，系统异常", e);
+            writeErrorResponse(response, AppHttpCodeEnum.SYSTEM_ERROR.getCode(), "导出失败：" + e.getMessage());
         }
     }
 
+    /**
+     * 导入分类
+     *
+     * @param file 导入的Excel文件
+     * @return 操作结果
+     */
+    @PostMapping("/import")
+    @SystemLog("导入分类")
+    public ResponseResult<?> importCategory(@RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "请选择要导入的Excel文件");
+        }
+
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null || !(originalFilename.endsWith(".xlsx") || originalFilename.endsWith(".xls"))) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "请上传Excel文件（.xlsx或.xls格式）");
+        }
+
+        try {
+            leBlogCategoryService.importCategory(file);
+            return ResponseResult.okResult();
+        } catch (SystemException e) {
+            log.error("导入分类失败，业务异常：{}", e.getMsg());
+            return ResponseResult.errorResult(e.getCode(), e.getMsg());
+        } catch (Exception e) {
+            log.error("导入分类失败，系统异常", e);
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, "导入失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 写入错误响应（带错误码和消息）
+     */
+    private void writeErrorResponse(HttpServletResponse response, int code, String message) {
+        try {
+            response.reset();
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("code", code);
+            errorResponse.put("msg", message);
+
+            response.getWriter().write(JSON.toJSONString(errorResponse));
+        } catch (IOException e) {
+            log.error("写入错误响应失败", e);
+        }
+    }
 }

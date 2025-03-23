@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // jwt过滤,必须携带token才能访问
                 .antMatchers("/user/logout", "/getInfo", "/getRouters").authenticated()
                 .antMatchers("/content/tag/listAllTag", "/content/tag", "/content/tag/list", "/content/tag/{id}").authenticated()
-                .antMatchers("/content/category/listAllCategory", "/content/category/list", "/content/category/{id}", "/content/category", "/content/category/status/{id}", "/content/category/export").authenticated()
+                .antMatchers("/content/category/listAllCategory", "/content/category/list", "/content/category/{id}", "/content/category", "/content/category/status/{id}", "/content/category/export", "/content/category/import").authenticated()
                 .antMatchers("/content/article", "/content/article/list", "/content/article/{id}", "/upload").authenticated()
                 .antMatchers("/content/link", "/content/link/list", "/content/link/{id}", "/content/link/changeLinkStatus").authenticated()
                 // 除上面外的所有请求全部不需要认证即可访问

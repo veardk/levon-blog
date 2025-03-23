@@ -1,5 +1,6 @@
 package com.levon.framework.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -11,20 +12,26 @@ import com.levon.framework.common.exception.SystemException;
 import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.domain.dto.AdminCategoryCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminCategoryUpdateValidationDTO;
+import com.levon.framework.domain.dto.AdminExcelCategoryDTO;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogCategory;
 import com.levon.framework.domain.vo.AdminCategoryListVO;
 import com.levon.framework.domain.vo.AdminExcelCategoryVO;
 import com.levon.framework.domain.vo.ClientCategoryVO;
 import com.levon.framework.domain.vo.PageVO;
+import com.levon.framework.listener.ExcelCategoryListener;
 import com.levon.framework.mapper.LeBlogCategoryMapper;
 import com.levon.framework.service.LeBlogArticleService;
 import com.levon.framework.service.LeBlogCategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author leivik
@@ -234,8 +241,82 @@ public class LeBlogCategoryServiceImpl extends ServiceImpl<LeBlogCategoryMapper,
         return BeanCopyUtils.copyBeanList(categories, AdminExcelCategoryVO.class);
     }
 
+    /**
+     * 导入分类数据
+     *
+     * @param file 导入的Excel文件
+     */
+    @Override
+    public void importCategory(MultipartFile file) {
+        try {
+            // 创建Excel监听器
+            ExcelCategoryListener listener = new ExcelCategoryListener();
+            
+            // 读取Excel文件
+            EasyExcel.read(file.getInputStream(), AdminExcelCategoryDTO.class, listener)
+                    .sheet()
+                    .doRead();
+
+            // 获取解析后的数据
+            List<AdminExcelCategoryDTO> categoryDTOList = listener.getData();
+            
+            if (categoryDTOList.isEmpty()) {
+                throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "Excel文件中没有数据");
+            }
+
+            // 业务验证和数据保存
+            saveBatchCategory(categoryDTOList);
+            
+        } catch (IOException e) {
+            log.error("读取Excel文件失败", e);
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "读取Excel文件失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 批量保存分类数据
+     *
+     * @param dtoList 分类数据列表
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveBatchCategory(List<AdminExcelCategoryDTO> dtoList) {
+        // 检查Excel中是否有重复的分类名称
+        Set<String> nameSet = new HashSet<>();
+        List<String> duplicateNames = dtoList.stream()
+                .map(AdminExcelCategoryDTO::getName)
+                .filter(name -> !nameSet.add(name))
+                .collect(Collectors.toList());
+        if (!duplicateNames.isEmpty()) {
+            throw new SystemException(AppHttpCodeEnum.DATA_EXIST, 
+                "Excel中存在重复的分类名称：" + String.join(", ", duplicateNames));
+        }
+
+        // 检查是否与数据库中的分类名称重复
+        List<String> existingNames = dtoList.stream()
+                .map(AdminExcelCategoryDTO::getName)
+                .filter(this::isCategoryNameExist)
+                .collect(Collectors.toList());
+        if (!existingNames.isEmpty()) {
+            throw new SystemException(AppHttpCodeEnum.DATA_EXIST, 
+                "以下分类名称已存在：" + String.join(", ", existingNames));
+        }
+
+        // 分批处理数据
+        try {
+            List<LeBlogCategory> categoryList = BeanCopyUtils.copyBeanList(dtoList, LeBlogCategory.class);
+            
+            // 使用分批保存，避免数据量太大
+            int batchSize = 100;
+            for (int i = 0; i < categoryList.size(); i += batchSize) {
+                int end = Math.min(i + batchSize, categoryList.size());
+                saveBatch(categoryList.subList(i, end), batchSize);
+            }
+            
+            log.info("成功导入 {} 条分类数据", categoryList.size());
+        } catch (Exception e) {
+            log.error("批量保存分类数据失败", e);
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "批量保存分类数据失败");
+        }
+    }
 }
-
-
-
-
