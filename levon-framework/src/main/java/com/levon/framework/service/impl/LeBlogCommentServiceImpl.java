@@ -95,6 +95,11 @@ public class LeBlogCommentServiceImpl extends ServiceImpl<LeBlogCommentMapper, L
                 .map(ClientCommentVO::getId)
                 .toList();
 
+        // 如果没有根评论，直接返回空列表
+        if (rootCommentIds.isEmpty()) {
+            return rootCommentVoList;
+        }
+
         // 批量查询子评论
         LambdaQueryWrapper<LeBlogComment> childrenWrapper = new LambdaQueryWrapper<>();
         childrenWrapper.eq(LeBlogComment::getType, commentType)

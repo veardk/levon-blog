@@ -86,4 +86,11 @@ public interface LeBlogArticleService extends IService<LeBlogArticle> {
      * @param delIdList 待删除的文章ID列表
      */
     void batchDel(List<Long> delIdList);
+
+    /**
+     * 处理文章浏览事件
+     * 
+     * @param articleId 文章ID
+     */
+    void processArticleView(Long articleId);
 }

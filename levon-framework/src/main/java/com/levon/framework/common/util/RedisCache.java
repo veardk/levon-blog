@@ -238,11 +238,68 @@ public class RedisCache {
     }
 
     /**
+     * 设置值，仅当键不存在时才设置
+     *
+     * @param key 键
+     * @param value 值
+     * @param timeout 过期时间
+     * @param unit 时间单位
+     * @return 是否设置成功
+     */
+    public <T> Boolean setIfAbsent(final String key, final T value, final long timeout, final TimeUnit unit) {
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
+    }
+
+    /**
      * @param key
      * @param hKey
      * @param v    自增的值
      */
     public void incrementCacheMapValue(String key, String hKey, long v) {
         redisTemplate.boundHashOps(key).increment(hKey, v);
+    }
+
+    /**
+     * 尝试获取分布式锁
+     *
+     * @param lockKey   锁键
+     * @param expireTime 锁过期时间（秒）
+     * @return 是否获取成功
+     */
+    public boolean tryLock(String lockKey, long expireTime) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(lockKey, "1", expireTime, TimeUnit.SECONDS);
+        return success != null && success;
+    }
+    
+    /**
+     * 释放分布式锁
+     *
+     * @param lockKey 锁键
+     * @return 是否释放成功
+     */
+    public boolean releaseLock(String lockKey) {
+        return redisTemplate.delete(lockKey);
+    }
+
+    /**
+     * List操作 - 从左边入队
+     *
+     * @param key Redis键
+     * @param value 值
+     * @return 入队后的长度
+     */
+    public Long lPush(String key, Object value) {
+        return redisTemplate.opsForList().leftPush(key, value);
+    }
+    
+    /**
+     * List操作 - 截断列表
+     *
+     * @param key Redis键
+     * @param start 开始位置
+     * @param end 结束位置
+     */
+    public void lTrim(String key, long start, long end) {
+        redisTemplate.opsForList().trim(key, start, end);
     }
 }

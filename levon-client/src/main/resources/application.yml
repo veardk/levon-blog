@@ -1,6 +1,8 @@
 server:
   port: 7777
 spring:
+  application:
+    name: levon-client
   datasource:
     url: jdbc:mysql://localhost:3306/le_blog?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
@@ -30,4 +32,11 @@ oss:
   bucket: levon-blog
   fileBucketUrl: http://ss6so06zb.hb-bkt.clouddn.com/ # 外链域名
 
-
+# RocketMQ配置
+rocketmq:
+  name-server: 101.200.141.46:9876 # RocketMQ服务器地址
+  producer:
+    group: levon-article-view-producer
+    send-message-timeout: 3000 # 发送消息超时时间(毫秒)
+  consumer:
+    pull-batch-size: 10 # 批量消费最大消息数

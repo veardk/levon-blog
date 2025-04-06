@@ -10,12 +10,14 @@ import com.levon.framework.common.util.BeanCopyUtils;
 import com.levon.framework.common.util.RedisCache;
 import com.levon.framework.domain.dto.AdminArticleCreateValidationDTO;
 import com.levon.framework.domain.dto.AdminArticleUpdateValidationDTO;
+import com.levon.framework.domain.event.ArticleViewedEvent;
 import com.levon.framework.domain.entry.LeBlogArticle;
 import com.levon.framework.domain.entry.LeBlogArticleTag;
 import com.levon.framework.domain.entry.LeBlogTag;
 import com.levon.framework.domain.vo.*;
 import com.levon.framework.mapper.LeBlogArticleMapper;
 import com.levon.framework.mapper.LeBlogTagMapper;
+import com.levon.framework.mq.producer.ArticleViewProducer;
 import com.levon.framework.service.LeBlogArticleService;
 import com.levon.framework.service.LeBlogArticleTagService;
 import com.levon.framework.service.LeBlogCategoryService;
@@ -60,6 +62,9 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private ArticleViewProducer articleViewProducer;
 
     private static final String ARTICLE_VIEW_COUNT_KEY = "article:viewCount"; // view count redis key
 
@@ -190,21 +195,32 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
      */
     @Override
     public void updateViewCount(Long id) {
+        // 查询文章
         LeBlogArticle leBlogArticle = leBlogArticleMapper.selectOne(new LambdaQueryWrapper<LeBlogArticle>()
                 .eq(LeBlogArticle::getId, id)
                 .eq(LeBlogArticle::getStatus, ARTICLE_STATUS_PUBLISHED));
 
+        // 如果文章不存在，抛出异常
         if (Objects.isNull(leBlogArticle)) {
             throw new SystemException(AppHttpCodeEnum.ARTICLE_NOT_FOUND);
         }
 
+        // 如果文章存在，则发送消息到队列
         try {
-            redisCache.incrementCacheMapValue(ARTICLE_VIEW_COUNT_KEY, leBlogArticle.getId().toString(), 1);
+            // 创建浏览事件
+            ArticleViewedEvent viewEvent = new ArticleViewedEvent();
+            viewEvent.setArticleId(id);
+            viewEvent.setTimestamp(System.currentTimeMillis());
+            
+            // 发送消息到队列
+            articleViewProducer.sendViewEvent(viewEvent);
+            
+            log.debug("文章浏览事件已发送: articleId={}, messageId={}", 
+                    id, viewEvent.getMessageId());
         } catch (Exception e) {
-            log.error("Update view count error for article id: {}", id);
-            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "Update view count error for article id:  " + id);
+            log.error("发送文章浏览事件失败: articleId={}, error={}", id, e.getMessage(), e);
+            throw new SystemException(AppHttpCodeEnum.SYSTEM_ERROR, "更新文章浏览量失败：" + id);
         }
-
     }
 
     /**
@@ -516,8 +532,20 @@ public class LeBlogArticleServiceImpl extends ServiceImpl<LeBlogArticleMapper, L
         }
     }
 
+    /**
+     * 处理文章浏览事件
+     *
+     * @param articleId 文章ID
+     */
+    @Override
+    public void processArticleView(Long articleId) {
+        try {
+            // 增加Redis中的浏览量
+            redisCache.incrementCacheMapValue(ARTICLE_VIEW_COUNT_KEY, articleId.toString(), 1);
+            log.debug("文章浏览量增加成功: articleId={}", articleId);
+        } catch (Exception e) {
+            log.error("更新Redis文章浏览量失败: articleId={}, error={}", articleId, e.getMessage(), e);
+        }
+    }
+
 }
-
-
-
-
